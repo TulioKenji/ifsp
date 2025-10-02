@@ -1,0 +1,9 @@
+POST http://localhost:3000/property/
+Content-Type: "application/json"
+
+{
+    "type": "vendas",
+    "address": "rua 5",
+    "rooms": 4,
+    "property": "casa"
+}

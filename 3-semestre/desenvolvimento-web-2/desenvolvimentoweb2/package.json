@@ -1,0 +1,16 @@
+{
+  "name": "teste-node",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "version":"node -v",
+    "start": "node ./src/server.js",
+    "dev": "node --watch ./src/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

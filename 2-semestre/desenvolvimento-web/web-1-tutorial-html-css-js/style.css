@@ -1,0 +1,117 @@
+/*
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+*/
+
+/* layout1
+#page{
+    background-color: red;
+    width: 1000px;
+    height: 1000px;
+    margin: 0 auto 0 auto;
+}
+
+#header{
+    background-color: blue;
+    height: 200px;
+}
+
+#main{
+    display: flex;
+}
+
+#sidebar{   
+    background-color: aqua;
+    height: 600px;
+    width: 300px;
+}
+
+#content{
+    background-color: chartreuse;
+    height: 600px;
+    width: 400px;
+
+}
+
+#autobots{
+    background-color: aquamarine;
+    height: 600px;
+    width: 300px;
+}
+
+#footer{    
+    background-color: yellow;
+    height: 200px;
+}
+*/
+
+/* layout 2
+#page{
+    background-color: red;
+    height: 1000px;
+    width: 1000px;
+    margin: 0 auto;
+    display: flex;
+}
+
+#sidebar{
+    background-color: aqua;
+    width: 20%;
+}
+
+#header{
+    background-color: blue;
+    width: 800px;
+    height: 300px;
+
+}
+
+#main{
+    background-color: rgb(0 20 13);
+    width: 800px;
+    height: 400px;
+}
+
+#footer{
+    background-color: rgb(45 123 80);
+    width: 800px;
+    height: 300px;
+}
+*/
+
+/*layout 4*/
+#page{
+    background-color: red;
+    height: 1000px;
+    width: 1000px;
+    margin: 0 auto;
+
+}
+
+#header{
+    background-color: blue;
+    height: 200px;
+    width: 1000px;
+
+}
+
+#section{
+    display: flex;
+}
+
+#sidebar{
+    background-color: aqua;
+    width: 200px;
+    height: 800px;
+}
+
+
+#main{
+    background-color: rgb(0 20 13);
+    width: 800px;
+    height: 600px;
+}
+

@@ -1,0 +1,66 @@
+body{
+    background-color: rgb(25, 25 ,25);
+}
+
+#header{
+    height: 120px;
+    background-color: black;
+}
+
+.wrapper{
+   width:  1000px;
+   margin: 0 auto;
+}
+
+#header .wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    gap: 380px;
+}
+
+.logo{
+    display: flex;
+    width: 150px;
+    gap: 10px;
+}
+
+#logotxt{
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+    font-weight: 500;
+}
+
+#logotxt span{
+    color: #75FB4C;
+}
+
+#nav{
+    width: 700px;
+    height: 60px;
+    background-color: grey;
+}
+
+#nav ul{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+}
+
+#nav ul li{
+    font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+    font-weight: 300;
+    color: white;
+    padding-top: 20px;
+}
+
+#nav ul li a{
+    text-decoration: none;
+    color: white;
+}
+
+#nav ul li a:hover{
+    font-weight: 700;
+}

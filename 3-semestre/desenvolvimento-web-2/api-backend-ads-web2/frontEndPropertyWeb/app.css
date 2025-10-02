@@ -1,0 +1,28 @@
+body{
+    background-color: rgb(34, 34, 34);
+
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    padding: 2% 5% 2% 5%;
+    background-color: rgb(53, 53, 53);
+    align-items: center;
+}
+
+.title1{
+    font-size: 230%;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-weight: 700;
+    color: rgb(194, 194, 194);
+}
+
+#addheader{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-weight: 700;
+    font-size: 200%;
+    background-color: rgb(65, 65, 65);
+    color: rgb(194, 194, 194);
+    padding: 0.5% 2% 0.5% 2%;
+}
