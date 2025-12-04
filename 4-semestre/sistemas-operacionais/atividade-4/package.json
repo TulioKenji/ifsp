@@ -1,0 +1,20 @@
+{
+  "name": "atividade-4",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "author": "tulio kenji yoshimura",
+  "license": "UNLICENSED",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.9.0"
+  }
+}

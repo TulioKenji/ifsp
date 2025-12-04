@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:senha@localhost:3306/atividade4sop"
+}
+
+model documentos {
+  id        Int      @id @default(autoincrement())
+  cpf       String?  @db.VarChar(200)
+  rg        String?  @db.VarChar(200)
+  cnh       String?  @db.VarChar(200)
+  idUsuario Int
+  usuarios  usuarios @relation(fields: [idUsuario], references: [id], onDelete: NoAction, map: "documentos_ibfk_1")
+
+  @@index([idUsuario], map: "idUsuario")
+}
+
+model enderecos {
+  id        Int      @id @default(autoincrement())
+  rua       String?  @db.VarChar(200)
+  bairro    String?  @db.VarChar(200)
+  idUsuario Int
+  usuarios  usuarios @relation(fields: [idUsuario], references: [id], onDelete: NoAction, map: "enderecos_ibfk_1")
+
+  @@index([idUsuario], map: "idUsuario")
+}
+
+model usuarios {
+  id         Int          @id @default(autoincrement())
+  nome       String?      @db.VarChar(200)
+  email      String?      @db.VarChar(200)
+  senha      String?      @db.VarChar(200)
+  documentos documentos[]
+  enderecos  enderecos[]
+}
