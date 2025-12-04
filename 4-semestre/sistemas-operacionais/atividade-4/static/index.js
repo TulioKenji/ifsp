@@ -37,3 +37,4 @@ btnCadastrar.addEventListener("click", async (e) => {
         console.error('Erro ao cadastrar usuário:', error);
     }
 });
+

@@ -26,10 +26,16 @@
             <div id="mensagem"></div>
         </div>
         <div class="exportar-usuarios">
-            <h1>Exportar usuários</h1>
-            <button id="btn-csv">Exportar para CSV</button>
-            <button id="btn-json">Exportar para JSON</button>
-            <button id="btn-pdf">Exportar para PDF</button>
+            <h1>Exportar dados</h1>
+            <a href="http://localhost:3000/pdf" download="usuarios.pdf">
+                <button>Exportar PDF</button>
+            </a>
+            <a href="http://localhost:3000/json" download="documentos.csv">
+                <button>Exportar JSON</button>
+            </a>
+            <a href="http://localhost:3000/csv" download="enderecos.csv">
+                <button>Exportar CSV</button>
+            </a>
         </div>
     </main>
 </body>
