@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/arquivo.css">
+
+    <title>Gerenciador de conta bancaria em arquivo</title>
+</head>
+<body onload="listarContas()">
+    <h1>Gerenciador de conta bancaria em arquivo</h1>
+    <button class="voltar-button" onclick="voltar()">Voltar</button>
+    <div id="listas">
+        <div id="div-listar">
+            <h2 id="h2-contas">Contas</h2>
+        </div>
+        <div id="div-listarAtualizadas">
+        </div>
+    </div>
+    <div id="div-buscarPorNumero">
+        <input type="number" id="numeroBuscar" placeholder="Número da conta" required>
+        <button class="botao-requisição" onclick="buscarPorNumero()">Buscar por número</button>
+    </div>
+    <div id="div-operacoes">
+        <input type="number" id="valorOperacao" placeholder="Valor" required>
+        <button class="botao-requisição" onclick="sacar()">Sacar</button>
+        <button class="botao-requisição" onclick="depositar()">Depositar</button>
+        <select id="select-tarifa">
+            <option value="FIXA">FIXA</option>
+            <option value="PERCENTUAL">PERCENTUAL</option>
+            <option value="ISENTA">ISENTA</option>
+        </select>
+        <button class="botao-requisição" onclick="tarifa()">Tarifa</button>
+    </div>
+    <div id="div-inserir">
+        <input type="number" id="numeroInserir" placeholder="Número da conta" required>
+        <input type="text" id="titularInserir" placeholder="Titular" required>
+        <input type="number" id="saldoInserir" placeholder="Saldo inicial" required>
+        <button class="botao-requisição" onclick="inserirConta()">Inserir conta</button>
+    </div>
+</body>
+<script src="../app.js"></script>
+<script src="arquivo.js"></script>
+</html>

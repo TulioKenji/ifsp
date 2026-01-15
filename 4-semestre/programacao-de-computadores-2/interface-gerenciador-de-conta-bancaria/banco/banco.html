@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/banco.css">
+
+    <title>Gerenciador de conta bancária</title>
+</head>
+<body>
+    <h1>Gerenciador de conta bancária em banco de dados</h1>
+    <button class="voltar-button" onclick="voltar()">Voltar</button>
+    <div id="div-listar">
+        <button class="botao-requisição" onclick="listarContas()">Listar contas</button>
+    </div>
+    <div id="div-buscarPorNumero">
+        <input type="number" id="numeroBuscar" placeholder="Número da conta" required>
+        <button class="botao-requisição" onclick="buscarPorNumero()">Buscar por número</button>
+
+    </div>
+    <div id="div-inserir">
+        <input type="number" id="numeroInserir" placeholder="Número da conta" required>
+        <input type="text" id="titularInserir" placeholder="Titular" required>
+        <input type="number" id="saldoInserir" placeholder="Saldo inicial" required>
+        <button class="botao-requisição" onclick="inserirConta()">Inserir conta</button>
+    </div>
+    <div id="div-atualizar">
+        <input type="number" id="numeroAtualizar" placeholder="Número da conta" required>
+        <input type="number" id="saldoAtualizar" placeholder="Novo saldo" required>
+        <button class="botao-requisição" onclick="atualizarSaldo()">Atualizar saldo</button>
+    </div>
+    <div id="div-excluir">
+        <input type="number" id="numeroExcluir" placeholder="Número da conta" required>
+        <button onclick="excluirConta()">Excluir conta</button>
+    </div>
+    <div id="div-transferencia">
+        <input type="number" id="numeroOrigem" placeholder="Número da conta de origem" required>
+        <input type="number" id="numeroDestino" placeholder="Número da conta de destino" required>
+        <input type="number" id="valorTransferencia" placeholder="Valor da transferência" required>
+        <button onclick="transferencia()">Transferencia</button>
+    </div>
+</body>
+<script src="../app.js"></script>
+<script src="banco.js"></script>
+</html>

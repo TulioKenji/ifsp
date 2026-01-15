@@ -1,0 +1,15 @@
+{
+  "name": "interface-gerenciador-de-conta-bancaria",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "type": "module",
+  "author": "Tulio Kenji Yoshimura",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^38.1.2"
+  }
+}

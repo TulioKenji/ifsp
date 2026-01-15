@@ -1,0 +1,120 @@
+h1{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 5em;
+    font-weight: 900;
+}
+
+h2{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 3em;
+    font-weight: 700;
+}
+
+.main-button{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    padding: 2%;
+    border-radius: 1em;
+    border: solid 0.2em black;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.5);
+}
+
+header{
+    display: flex;
+    justify-content: center;
+}
+
+main{
+    margin-top: 3em;
+    display: flex;
+    justify-content: center;
+}
+
+#botoes{
+    margin-top: 3em;
+    margin-left: 25%;
+    margin-right: 25%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.voltar-button{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 1em;
+    font-weight: 700;
+    padding: 1%;
+    border-radius: 1em;
+    border: solid 0.2em black;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.5);
+    top: 1em;
+    left: 1em;
+}
+
+.botao-requisição{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 0.3%;
+    border-radius: .5em;
+    border: solid 0.1em black;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.5);
+    margin-left: 1em;
+}
+
+p{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+input{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    border: solid 0.1em black;
+    box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.2);
+}
+
+#div-listar, #div-listarAtualizadas{
+    display: flex;
+    flex-direction: column;
+    margin-left: 3%;
+    margin-top: 3%;
+    align-items: start;
+    gap: 1em;
+    
+}
+
+#div-buscarPorNumero, #div-inserir, #div-atualizar, #div-excluir, #div-transferencia, #div-operacoes{
+    display: flex;
+    flex-direction: row;
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-top: 3%;
+    align-items: center;
+    gap: 1em;
+    
+}
+
+#div-transferencia{
+    margin-bottom: 3%;
+}
+
+#select-contas{
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    border: solid 0.1em black;
+    box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.2);
+}
