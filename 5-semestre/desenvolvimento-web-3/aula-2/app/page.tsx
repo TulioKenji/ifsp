@@ -21,7 +21,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center ">
+    <div className="flex min-h-screen items-center justify-center">
       <main className="flex h-dvh w-full flex-col items-center justify-center gap-y-14">
         <header className="flex items-center justify-center gap-5">
           <UserIcon className="h-12 w-12 text-black dark:text-zinc-50" />

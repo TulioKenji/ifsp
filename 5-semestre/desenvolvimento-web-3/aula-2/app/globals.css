@@ -24,3 +24,45 @@ body {
   color: #fafafa;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Camada de estrelas */
+body::after {
+  content: "";
+  position: absolute;
+  top: -2000px;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+
+  /* ESTRELAS */
+  box-shadow:
+    100px 200px white,
+    300px 400px white,
+    500px 800px white,
+    700px 1200px white,
+    900px 1600px white,
+    1200px 300px white,
+    1500px 700px white,
+    1800px 1100px white,
+    200px 1500px white,
+    1600px 1800px white;
+
+  /* EFEITO BRILHO */
+  filter: drop-shadow(0 0 4px white)
+          drop-shadow(0 0 8px white)
+          drop-shadow(0 0 12px white);
+
+  animation: estrelas-movendo 40s linear infinite;
+  opacity: 0.9;
+}
+
+/* Movimento vertical */
+@keyframes estrelas-movendo {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(2000px);
+  }
+}
