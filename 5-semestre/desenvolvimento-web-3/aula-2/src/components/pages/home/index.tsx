@@ -9,12 +9,22 @@ interface HomeProps {
 
 export default function Home({ message }: HomeProps) {
     const [loading, setLoading] = useState(true);
+    const [cookies, setCookies] = useState<{ [key: string]: string }>({});
 
 
 useEffect(() => {
     const timeout = setTimeout(() => {
         setLoading(false);
     }, 2000);
+    const cookieString = document.cookie;
+    const cookieArray = cookieString.split(";").map(cookie => cookie.trim());
+    const cookieObject: { [key: string]: string } = {};
+    cookieArray.forEach(cookie => {
+        const [key, value] = cookie.split("=");
+        cookieObject[key] = value;
+    });
+    setCookies(cookieObject);
+    document.cookie="testCookie=HelloWorld; username=admin"; // Exemplo de como definir um cookie
     return () => clearTimeout(timeout);
 }, [])
 
@@ -34,6 +44,7 @@ useEffect(() => {
             <h1 className="text-center text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 {message}
             </h1>
+            <p>{JSON.stringify(cookies)}</p>
         </main>
     )
 }
