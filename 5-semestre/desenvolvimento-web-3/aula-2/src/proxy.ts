@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function proxy(request: NextRequest) {
+const authenticatedPaths = [
+    '/home',
+]
 
+export function proxy(request: NextRequest) {
+    const cookies = request.cookies;
+    const pathname = request.nextUrl.pathname;
+    const authToken = cookies.get('authToken')?.value;
+
+    if(authenticatedPaths.includes(pathname) && (!authToken || authToken === 'undefined')) {
+        return NextResponse.redirect(new URL('/', request.url));
+    }
 
     return NextResponse.next()
 }
