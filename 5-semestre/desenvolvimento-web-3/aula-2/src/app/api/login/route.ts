@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LoginRequestBody } from "@/common/interfaces/login";
-
+import { LoginRequest } from "@/types/login";
 
 
 export async function POST(request: NextRequest) {
@@ -10,7 +9,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Invalid Access' }, { status: 403 });
     }
 
-    const { username, password }: LoginRequestBody = await request.json();
+    const { username, password }: LoginRequest = await request.json();
 
     if (username === 'admin' && password === 'password') {
         return NextResponse.json({ message: 'Login successful', authToken: 'auth-token-123456789', username: username }, { status: 201 });
