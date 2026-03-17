@@ -1,8 +1,10 @@
 import { cookies } from "next/headers";
+import { ZodObject } from "zod";
 
 interface fetchApiProps<T> extends RequestInit{
     url: string;
     data?: T;
+    schema: ZodObject
 }
 
 export default async function fetchApi<T>(props: fetchApiProps<T>): Promise<{status: number} & T> {
@@ -31,7 +33,8 @@ export default async function fetchApi<T>(props: fetchApiProps<T>): Promise<{sta
             throw response
         }
 
-        const data = await response.json();
+        const rawData = await response.json();
+        const data = props.schema.parse(rawData);
         
         return { status: response.status, ...data } as {status: number} & T;
 

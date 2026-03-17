@@ -1,13 +1,13 @@
 'use client';
 
-import toast from 'react-hot-toast';
 
-import loginAction from "./action";
+import { useAuth } from '@/contexts/authContext';
 
 import { useRouter } from "next/navigation";
 
 export default function Login() {
     const router = useRouter();
+    const { login } = useAuth();
 
 
     const handleSubmit = async (e: React.SubmitEvent) => {
@@ -15,18 +15,7 @@ export default function Login() {
         const formData = new FormData(e.target);
         const username = formData.get('username') as string;
         const password = formData.get('password') as string;
-        try {
-            const data = await loginAction({ username, password });
-            if(data.authToken) {
-                toast.success(data.message);
-                router.push('/home');
-                
-            } else {
-                toast.error(data.message);
-            }
-        } catch (error) {
-            toast.error('Erro ao fazer login');
-        }
+        await login(username, password);
     }
 
     return (

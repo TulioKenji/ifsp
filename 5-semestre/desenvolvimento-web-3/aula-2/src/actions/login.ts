@@ -1,10 +1,10 @@
 'use server';
-import { LoginRequestBody, LoginResponse } from "@/common/interfaces/login";
 import fetchApi from "@/services/fetchApi";
 import { cookies } from 'next/headers';
+import { LoginRequest, LoginResponse, loginResponseSchema } from "@/types/login";
 
 
-export default async function loginAction({ username, password }: LoginRequestBody) {
+export default async function loginAction({ username, password }: LoginRequest) {
     const cookieStore = await cookies();
 
     if (!password || !username) {
@@ -15,6 +15,7 @@ export default async function loginAction({ username, password }: LoginRequestBo
             url: 'api/login',
             method: 'POST',
             body: JSON.stringify({ username, password }),
+            schema: loginResponseSchema
         });
 
 
