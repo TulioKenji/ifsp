@@ -10,15 +10,13 @@ import toast from 'react-hot-toast';
 import { User } from '@/types/user';
 
 interface AuthContextType {
-    login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     user: User | null;
 }
 
 
 
-const AuthContext = createContext<AuthContextType >({
-    login: async (username: string, password: string) => {},
+const AuthContext = createContext<AuthContextType>({
     logout: async () => {},
     user: null
 });
@@ -48,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ login, logout, user }}>
+        <AuthContext.Provider value={{ logout, user }}>
             {children}
         </AuthContext.Provider>
     );

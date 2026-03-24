@@ -11,20 +11,19 @@ export default async function loginAction({ username, password }: LoginRequest) 
         throw new Error('Username e password são obrigatórios');
     }
     try {
-        const data = await fetchApi<LoginResponse>({
+        const response = await fetchApi<LoginResponse>({
             url: 'api/login',
             method: 'POST',
             body: JSON.stringify({ username, password }),
             schema: loginResponseSchema
-        });
+        }); 
+
+        const { data } = response;
 
 
-        if (data.authToken) {
-            cookieStore.set('authToken', data.authToken, { path: '/', httpOnly: true });
-        }
-        if (data.username) {
-            cookieStore.set('username', data.username, { path: '/' });
-        }
+        cookieStore.set('authToken', data.authToken, { path: '/', httpOnly: true });
+        cookieStore.set('username', data.username, { path: '/' });
+       
         return data;
     } catch (error) {
         throw new Error('Erro ao fazer login', { cause: error });

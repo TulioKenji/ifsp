@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';8
+import type { NextRequest } from 'next/server';
 
 const authenticatedPaths = [
     '/home',
@@ -14,7 +14,7 @@ export function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
-    return NextResponse.next()
+    return NextResponse.next();
 }
 
 

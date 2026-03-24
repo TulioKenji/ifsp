@@ -1,21 +1,34 @@
 'use client';
 
 
-import { useAuth } from '@/contexts/authContext';
 
 import { useRouter } from "next/navigation";
+import { useMutation } from '@tanstack/react-query';
+import loginAction from '@/actions/login';
+import toast from "react-hot-toast";
 
 export default function Login() {
     const router = useRouter();
-    const { login } = useAuth();
 
+    const mutation = useMutation({ 
+        mutationFn: loginAction, 
+        onSuccess: () => {router.push("/home"); toast.success('Login realizado com sucesso!');}, 
+        onError: (error) => toast.error('Erro ao realizar login. Verifique suas credenciais e tente novamente.') 
+    });
+
+    const isLoading = mutation.isPending;
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const username = formData.get('username') as string;
-        const password = formData.get('password') as string;
-        await login(username, password);
+
+        const username = formData.get('username')?.toString() || '';
+        const password = formData.get('password')?.toString() || '';
+        if(!username || !password) {
+            toast.error('Por favor, preencha todos os campos.');
+            return;
+        }
+        mutation.mutateAsync({ username, password });
     }
 
     return (
@@ -27,7 +40,13 @@ export default function Login() {
                 <span className="text-sm text-zinc-400 hover:underline hover:text-zinc-200 self-end hover:cursor-pointer"
                     onClick={() => router.push('/forgot-password')}
                 >Esqueci minha senha</span>
-                <button type="submit" className="bg-black text-white rounded-md px-4 py-2 border border-zinc-200 hover:bg-zinc-200 hover:text-black transition-all duration-500">Entrar</button>
+                <button 
+                type="submit" 
+                className="button w-full"
+                disabled={isLoading}
+                >
+                    {isLoading ? 'Entrando...' : 'Entrar'}
+                </button>
             </form>
             <p className="text-sm text-zinc-400">Não tem uma conta? <span className="text-zinc-200 hover:underline hover:cursor-pointer" onClick={() => router.push('/register')}>Registrar</span></p>
         </div>

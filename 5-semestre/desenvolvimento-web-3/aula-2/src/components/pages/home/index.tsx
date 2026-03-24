@@ -13,6 +13,12 @@ export default function Home({ message }: HomeProps) {
 
     const { setContent, setClose, setOpen } = useModal();
 
+    const [shouldError, setShouldError] = useState(false)
+
+  if (shouldError) {
+    throw new Error('Test Error')
+  }
+
    
 
     return (
@@ -35,6 +41,12 @@ export default function Home({ message }: HomeProps) {
                 className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
                 Open Modal
+            </button>
+            <button
+                onClick={() => {setShouldError(true)}}
+                className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            >
+               Error Boundary Test
             </button>
         </main>
     )

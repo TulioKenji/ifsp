@@ -1,9 +1,15 @@
 import Login from "@/components/pages/login";
 import { UserIcon } from "@heroicons/react/24/outline";
 
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export default async function Home() {
-  
+  const cookieStore = await cookies();
+    const authToken = cookieStore.get('authToken')?.value;
+    if(authToken) {
+      return redirect('/home');
+    }
 
   return (
     <div className="flex min-h-screen items-center justify-center">

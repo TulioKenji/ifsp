@@ -11,7 +11,7 @@ export function ModalRoot({ children, onClose, isOpen }: ModalRootProps) {
         <div
             className={`fixed inset-0 flex items-center justify-center z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             onClick={onClose}
-            style={{ backgroundColor: '#777777CC' }}
+            style={{ backgroundColor: '#000000CC' }}
         >
             <div className={``}
                 onClick={(e) => e.stopPropagation()}>

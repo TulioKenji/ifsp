@@ -1,13 +1,13 @@
 import { cookies } from "next/headers";
-import { ZodObject } from "zod";
+import { z } from "zod";
 
-interface fetchApiProps<T> extends RequestInit{
+interface FetchApiProps<T> extends RequestInit{
     url: string;
     data?: T;
-    schema: ZodObject
+    schema: z.ZodObject
 }
 
-export default async function fetchApi<T>(props: fetchApiProps<T>): Promise<{status: number} & T> {
+export default async function fetchApi<T>(props: FetchApiProps<T>): Promise<FetchApiResponse<T>> {
     const apiURL = process.env.API_URL;
     const access = process.env.ACCESS;
     const cookieStore = await cookies();
@@ -17,11 +17,13 @@ export default async function fetchApi<T>(props: fetchApiProps<T>): Promise<{sta
         throw new Error("API_URL or ACCESS is not defined in environment variables");
     }
 
+    const { schema, headers, url, ...requestProps } = props;
+
     try {
-        const response = await fetch(`${apiURL}/${props.url}`, {
-            ...props,
+        const response = await fetch(`${apiURL}/${url}`, {
+            ...requestProps,
             headers: {
-                ...props.headers,
+                ...headers,
                 "Content-Type": "application/json",
                 Access: access,
                 Authorization: `Bearer: ${authToken}`,
@@ -29,14 +31,17 @@ export default async function fetchApi<T>(props: fetchApiProps<T>): Promise<{sta
             },
         })
 
+        
+        const status = response.status;
+
         if (!response.ok) {
             throw response
         }
 
         const rawData = await response.json();
-        const data = props.schema.parse(rawData);
+        const data = schema.parse(rawData);
         
-        return { status: response.status, ...data } as {status: number} & T;
+        return { status, data } as FetchApiResponse<T>;
 
     }catch (error) {
         throw error;
