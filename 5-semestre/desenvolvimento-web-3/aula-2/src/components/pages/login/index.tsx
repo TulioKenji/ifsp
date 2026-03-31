@@ -13,7 +13,7 @@ export default function Login() {
     const mutation = useMutation({ 
         mutationFn: loginAction, 
         onSuccess: () => {router.push("/home"); toast.success('Login realizado com sucesso!');}, 
-        onError: (error) => toast.error('Erro ao realizar login. Verifique suas credenciais e tente novamente.') 
+        onError: (error) => toast.error(error.message || 'Erro ao realizar login. Verifique suas credenciais e tente novamente.') 
     });
 
     const isLoading = mutation.isPending;

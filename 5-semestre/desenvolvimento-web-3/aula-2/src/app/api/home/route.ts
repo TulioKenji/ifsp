@@ -5,5 +5,5 @@ export async function GET(request: NextRequest) {
     if(!token) {
         return NextResponse.json({ message: 'No token provided' }, { status: 401 });
     }
-    return NextResponse.json({ message: `Hello, World!` }, { status: 200 });
+    return NextResponse.json({ message: token }, { status: 200 });
 }

@@ -4,7 +4,7 @@ import { z } from "zod";
 interface FetchApiProps<T> extends RequestInit{
     url: string;
     data?: T;
-    schema: z.ZodObject
+    schema: z.ZodType<T>;
 }
 
 export default async function fetchApi<T>(props: FetchApiProps<T>): Promise<FetchApiResponse<T>> {
@@ -26,7 +26,7 @@ export default async function fetchApi<T>(props: FetchApiProps<T>): Promise<Fetc
                 ...headers,
                 "Content-Type": "application/json",
                 Access: access,
-                Authorization: `Bearer: ${authToken}`,
+                Authorization: `${authToken}`,
                 credentials: "include",
             },
         })
@@ -41,7 +41,7 @@ export default async function fetchApi<T>(props: FetchApiProps<T>): Promise<Fetc
         const rawData = await response.json();
         const data = schema.parse(rawData);
         
-        return { status, data } as FetchApiResponse<T>;
+        return { status, data };
 
     }catch (error) {
         throw error;

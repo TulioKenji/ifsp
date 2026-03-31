@@ -19,7 +19,7 @@ export default function HeaderDropdownComponent({ username }: HeaderDropdownComp
                 <UserCircleIcon className="h-10 w-10" />
                 <p className="font-semibold">{username?.toLocaleUpperCase() || "Usuário"}</p>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Content className="border border-slate-50 rounded shadow-md p-2 transition-all duration-500">
+            <DropdownMenu.Content className="border border-slate-50 rounded shadow-md p-2 transition-all duration-500 bg-black">
                 <DropdownMenu.Item className="p-2 hover:text-slate-400 cursor-pointer transition-all duration-500 outline-none active:scale-95" onClick={() => router.push("/my-account")}>
                     My Account
                 </DropdownMenu.Item>

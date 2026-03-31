@@ -1,12 +1,7 @@
-import { cookies } from 'next/headers';
 import { redirect } from "next/navigation";
+import { logout } from '@/utils/logout';
 
 export async function GET() {
-    const cookieStore = await cookies();
-
-    cookieStore.delete('authToken');
-    cookieStore.delete('username');
-
-
+    await logout();
     redirect('/');
 }
