@@ -3,7 +3,6 @@ import { z } from "zod";
 
 interface FetchApiProps<T> extends RequestInit{
     url: string;
-    data?: T;
     schema: z.ZodType<T>;
 }
 
