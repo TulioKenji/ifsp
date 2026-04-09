@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useModal } from "@/contexts/modalContext";
+import { Button } from "@/components/common/button";
 
 interface HomeProps {
     message: string;
@@ -26,7 +27,7 @@ export default function Home({ message }: HomeProps) {
             <h1 className="text-center text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
                 {message}
             </h1>
-            <button
+            <Button
                 onClick={() => {
                     setContent(<div className="rounded-lg p-10 items-center bg-black justify-center">
                         <button onClick={() => setClose()} className="text-white hover:text-gray-300">
@@ -38,16 +39,16 @@ export default function Home({ message }: HomeProps) {
                     </div>);
                     setOpen();
                 }}
-                className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                className="bg-blue-600"
             >
                 Open Modal
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => {setShouldError(true)}}
-                className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                className="bg-blue-600"
             >
                Error Boundary Test
-            </button>
+            </Button>
         </main>
     )
 }
