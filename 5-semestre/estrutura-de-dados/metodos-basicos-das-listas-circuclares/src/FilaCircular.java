@@ -3,26 +3,27 @@ public class FilaCircular {
     private No cauda;
     private int tamanho;
 
-    public FilaCircular(){
+    public FilaCircular() {
         this.cabeca = null;
         this.cauda = null;
         this.tamanho = 0;
     }
-    public FilaCircular(int[]x){
+
+    public FilaCircular(int[] x) {
         this.tamanho = 0;
-        for(int i = 0; i<x.length; i++){
+        for (int i = 0; i < x.length; i++) {
             insereFinal(x[i]);
         }
     }
 
-    public void insereInicio(int x){
+    public void insereInicio(int x) {
         No novo = new No(x);
         tamanho++;
-        if(cabeca == null){
+        if (cabeca == null) {
             cabeca = novo;
             return;
         }
-        if(cabeca.prox == null){
+        if (cabeca.prox == null) {
             cauda = cabeca;
             novo.prox = cauda;
             cabeca = novo;
@@ -33,14 +34,15 @@ public class FilaCircular {
         novo.prox = cabeca;
         cabeca = novo;
     }
-    public void insereFinal(int x){
+
+    public void insereFinal(int x) {
         No novo = new No(x);
         tamanho++;
-        if(cabeca == null){
+        if (cabeca == null) {
             cabeca = novo;
             return;
         }
-        if(cabeca.prox == null){
+        if (cabeca.prox == null) {
             novo.prox = cabeca;
             cauda = novo;
             cabeca.prox = cauda;
@@ -51,12 +53,13 @@ public class FilaCircular {
         cauda = novo;
     }
 
-    public void removeInicio(){
-        if(cabeca == null){
+    public void removeInicio() {
+        if (cabeca == null) {
             return;
-        };
+        }
+        ;
         tamanho--;
-        if(tamanho < 2){
+        if (tamanho < 2) {
             cabeca = null;
             return;
         }
@@ -64,45 +67,31 @@ public class FilaCircular {
         cauda.prox = cabeca;
     }
 
-    public void removeFinal(){
-        if(cabeca == null){
+    public void removeFinal() {
+        if (cabeca == null) {
             return;
-        };
+        }
+        ;
         tamanho--;
-        if(tamanho < 2){
+        if (tamanho < 2) {
             cabeca = null;
             return;
         }
         No temp = cabeca;
-        while(temp.prox.prox != cabeca){
+        while (temp.prox.prox != cabeca) {
             temp = temp.prox;
         }
         cauda = temp;
         cauda.prox = cabeca;
     }
 
-    public void josephus(int salto){
-        No btemp = cabeca;
-        No temp = cabeca;
-        while(tamanho > 1){
-            tamanho--;
-            for(int i = 1; i<salto;i++){
-                btemp = temp;
-                temp = temp.prox;
-            }
-            if(temp == cabeca) {
-                removeInicio();
-                btemp = cabeca;
-                temp = cabeca;
-                continue;
-            }
-            System.out.println(temp.prox.valor);
-            btemp.prox = btemp.prox.prox;
-            temp = btemp;
-            exibir();
-
+    public void josephus(int salto) {
+        while (cabeca != cabeca.prox) {
+            for (int i = 1; i < salto - 1; i++)
+                cabeca = cabeca.prox;
+            cabeca.prox = cabeca.prox.prox;
+            cabeca = cabeca.prox;
         }
-        System.out.println(cabeca.valor);
     }
     
     public int cabeca(){

@@ -56,5 +56,6 @@ void main() {
 
     var j  = new FilaCircular(vet);
     j.josephus(3);
+    j.exibir();
 
 }
