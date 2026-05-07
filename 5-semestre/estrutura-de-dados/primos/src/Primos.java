@@ -40,48 +40,35 @@ public class Primos {
         while (inicio.prox.valor < 3) {
             inicio = inicio.prox;
         }
-        int divisor = inicio.valor;
+        No temp1 = inicio;
 
-        while (divisor <= (N / 2)) {
-            No temp = inicio.prox;
-            No temp2 = inicio.prox;
-            System.out.println("-----");
-            System.out.println(temp2.valor);
-            exibir();
-            while (temp2.prox != null) {
+        while(temp1 != null && temp1.valor <= (N/2) ){
 
-                if (divisor >= temp2.prox.valor) {
+            No temp2 = temp1;
+
+            while(temp2.prox != null){
+
+                if((temp2.prox.valor % temp1.valor)==0)
+                    temp2.prox = temp2.prox.prox;
+
+                if(temp2.prox != null)
                     temp2 = temp2.prox;
-                    continue;
-                }
-                if (temp2.valor % divisor == 0) {
-                    tamanho++;
+            }
 
-                    System.out.print("valor " + temp2.valor);
-                    System.out.print("  divisor " + divisor);
-                    System.out.print('\n');
-                    exibir();
-                    System.out.println(temp.prox.valor);
-                    temp.prox = temp.prox.prox;
-                    System.out.println(temp.valor);
-                    temp = temp.prox;
-                    temp2 = temp.prox;
-                    exibir();
-                    continue;
-                }
-                temp2 = temp2.prox;
-            }
-            if (temp.prox == null) {
-                break;
-            }
-            divisor++;
+            temp1 = temp1.prox;
         }
 
     }
 
 
     static public int tamanho() {
-        return tamanho;
+        int cont = 0;
+        No temp = inicio;
+        while (temp != null) {
+            cont++;
+            temp = temp.prox;
+        }
+        return cont;
     }
 
     static public void exibir() {
