@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useMutation } from '@tanstack/react-query';
 import loginAction from '@/actions/login';
 import toast from "react-hot-toast";
+import { ModalContext} from "@/contexts/modalContext";
+import { use } from "react";
 
 export default function Login() {
     const router = useRouter();
@@ -15,20 +17,27 @@ export default function Login() {
         onSuccess: () => {router.push("/home"); toast.success('Login realizado com sucesso!');}, 
         onError: (error) => toast.error(error.message || 'Erro ao realizar login. Verifique suas credenciais e tente novamente.') 
     });
-
     const isLoading = mutation.isPending;
-
+    
     const handleSubmit = async (e: React.SubmitEvent) => {
+        const modal = use(ModalContext);
         e.preventDefault();
-        const formData = new FormData(e.target);
+        // const modal = useModal();
+        modal.setContent(
+            <div className="flex flex-col items-center justify-center gap-5 p-5 bg-zinc-50 font-sans border border-zinc-200 rounded-2xl dark:bg-black">
+                <h1>Login</h1>
+                </div>
+        );
+        modal.setOpen();
+        // const formData = new FormData(e.target);
 
-        const username = formData.get('username')?.toString() || '';
-        const password = formData.get('password')?.toString() || '';
-        if(!username || !password) {
-            toast.error('Por favor, preencha todos os campos.');
-            return;
-        }
-        mutation.mutateAsync({ username, password });
+        // const username = formData.get('username')?.toString() || '';
+        // const password = formData.get('password')?.toString() || '';
+        // if(!username || !password) {
+        //     toast.error('Por favor, preencha todos os campos.');
+        //     return;
+        // }
+        // mutation.mutateAsync({ username, password });
     }
 
     return (

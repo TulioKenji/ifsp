@@ -1,0 +1,15 @@
+node_modules
+*.csv
+*.log
+*.env
+dist
+build
+*.rar
+*.zip
+.DS_Store
+*.xlsx
+*.docx
+*.pdf
+*.exe
+*.dll
+*.doc

@@ -10,7 +10,7 @@ interface ModalContextProps  {
     setClose: () => void;
 }
 
-const ModalContext = createContext<ModalContextProps>({
+export const ModalContext = createContext<ModalContextProps>({
     content: null,
     setContent: () => { },
     setOpen: () => { },
