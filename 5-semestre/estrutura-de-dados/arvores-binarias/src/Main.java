@@ -57,8 +57,11 @@ void main() {
     inserir(3);
     inserir(2);
     inserir(20);
+    inserir(1);
+    inserir(4);
+    inserir(21);
 
-    System.out.println(contaFilhos(raiz,2));
+    System.out.println(contaFilhos(raiz,20));
     exibeArvore(raiz,0);
 }
 
@@ -221,24 +224,17 @@ public static int contaFilhos(NoA n, int x){
         return -1;
     }
     if(x != n.valor){
-        if(n.esq != null && n.dir == null){
-            return contaFilhos(n.esq, x);
-        }
-        contaFilhos(n.dir,x);
-        contaFilhos(n.esq,x);
-        return 2;
+        int a = contaFilhos(n.dir, x);
+        int b = contaFilhos(n.esq, x);
+        return (a>b) ? a : b;
     }
-    if(n.valor == x){
-        if(n.esq == null && n.dir == null){
-            return 0;
-        }
-        if(n.esq == null || n.dir == null){
-            return 1;
-        }
-        return 2;
+    if(n.esq == null && n.dir == null){
+        return 0;
     }
-
-    return -1;
+    if(n.esq == null || n.dir == null){
+        return 1;
+    }
+    return 2;
 
 }
 

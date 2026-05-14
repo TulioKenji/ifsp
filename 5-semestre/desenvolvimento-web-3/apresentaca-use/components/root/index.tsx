@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from "react";
+import { styleText } from "util";
 
 
 export default function Root(){
@@ -10,7 +11,9 @@ export default function Root(){
         const timeout = setTimeout(() => {
             div.current = document.getElementById('maluco')! as HTMLButtonElement;
             div.current.addEventListener('click', () => {
-                alert('clicou');
+                div.current?.style.setProperty('height', '500px', 'important');
+                div.current?.style.setProperty('width', '500px', 'important');
+                // alert('clicou');
             });
         }, 500);
 

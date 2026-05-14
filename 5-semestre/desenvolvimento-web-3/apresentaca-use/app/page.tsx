@@ -2,8 +2,8 @@ import Root from "@/components/root";
 import Image from "next/image";
 
 export default async function Home() {
-  const promiseTime = new Promise((resolve) => setTimeout(resolve, 2000));
-  await promiseTime;
+  // const promiseTime = new Promise((resolve) => setTimeout(resolve, 2000));
+  // await promiseTime;
 
 
   return (
@@ -42,7 +42,7 @@ export default async function Home() {
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
           <button
             id="maluco"
-            className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-300 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-500">
+            className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-300 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-500 transition-all duration-1000">
             Button
           </button>
         </div>
