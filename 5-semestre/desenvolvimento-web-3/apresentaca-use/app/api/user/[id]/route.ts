@@ -1,16 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { setTimeout } from "timers/promises";
 
 export async function GET(
-    request: NextRequest, 
+    request: NextRequest,
     { params }: { params: Promise<{ id?: string }> }
 ) {
-    const id = await params;
+    const param = await params;
+    const id = param.id ? `${param.id}` : '';
 
-    if (id?.id) {
-         if(id.id === '2'){
-            return NextResponse.error();
-        }
-        return NextResponse.json({name: "tulio", email: "tulio@example.com"}, {status: 200});
+    await setTimeout(5000,);
+
+    if (!id) {
+        return NextResponse.error();
     }
-    return NextResponse.json({name: "John Doe", email: "john.doe@example.com"}, {status: 200});
+
+    if (id === '1') {
+        return NextResponse.json({ name: "tulio", email: "tulio@example.com" }, { status: 200 });
+    }
+
+    return NextResponse.json({ name: "John Doe", email: "john.doe@example.com" }, { status: 200 });
 }

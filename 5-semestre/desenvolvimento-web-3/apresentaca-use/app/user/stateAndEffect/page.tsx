@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import UserPage from "@/components/user/withstateAndEffect"
+import UserPage from "@/components/pages/user/withstateAndEffect"
+import Loading from "@/components/pages/loading";
 
 interface Props {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -18,7 +19,7 @@ export default async function Page({ searchParams }: Props) {
         return res.json();
     }
     return (
-            <Suspense fallback={<p>waiting for user data...</p>}>
+            <Suspense fallback={<Loading />}>
                 <UserPage userPromise={userPromise()} />
             </Suspense>
     );

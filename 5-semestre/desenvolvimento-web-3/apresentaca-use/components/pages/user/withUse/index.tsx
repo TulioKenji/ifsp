@@ -3,11 +3,11 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 
-const promise = fetch("http://localhost:3000/api/user").then((res) => res.json())
+const promise = (id: string) => fetch(`http://localhost:3000/api/user/${id || '1'}`).then((res) => res.json());
 
-export default function UserPage({ userPromise }: { userPromise: Promise<any> }) {
+export default function UserPage({ id }: { id: string }) {
     const router = useRouter();
-    const user = use(promise);
+    const user = use(promise(id));
     console.log('renderizou')
     return (
         <div>
