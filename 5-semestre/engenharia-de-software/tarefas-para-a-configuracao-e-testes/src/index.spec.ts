@@ -1,5 +1,5 @@
 import { Calculadora } from "./calculadora";
-import { ListaNumerica } from "./listaNumerica";
+import { ListaNumerica } from "./listanumerica";
 
 describe("Introdução", () => {
     test("Hello world!", () => {

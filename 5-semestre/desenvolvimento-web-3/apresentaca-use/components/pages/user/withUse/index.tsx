@@ -1,24 +1,29 @@
 'use client';
 
 import { use } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import UserList from '@/components/ui/userList';
+import { Button } from '@/components/ui/button';
 
-const promise = (id: string) => fetch(`http://localhost:3000/api/user/${id || '1'}`).then((res) => res.json());
+// const promiseUsers = fetch(`http://localhost:3000/api/user`).then((res) => res.json()) as Promise<User[]>;
+// const promiseError = fetch(`http://localhost:3000/api/error`).then((res) => res.json()) as Promise<User[]>;
 
-export default function UserPage({ id }: { id: string }) {
+
+export default function UserPage({promiseUsers, promiseError}: PageUser) {
+    const error = useSearchParams().get('error');
     const router = useRouter();
-    const user = use(promise(id));
+    const user = error? use(promiseError) : use(promiseUsers);
     console.log('renderizou')
+
     return (
-        <div>
-            <h1>{user.name}</h1>
-            <p>{user.email}</p>
-            <div className='flex h-64 justify-center gap-10'>
-                <button onClick={() => router.push('/user/use?id=1')}>SetID</button>
-                <button onClick={() => router.push('/user/use')}>ClearID</button>
-                <button onClick={() => router.push('/user/use?id=2')}>Error</button>
+        <div className='flex flex-col gap-10 p-32'>
+            <div className='flex justify-center gap-20 items-center'>
+                {/* <Button colorType='success' onClick={()=>{router.refresh()}}>Voltar para a página inicial</Button> */}
+                <Button colorType='error' onClick={()=>{router.push('/user/use?error=1')}}>Gerar Erro</Button>
             </div>
-            <button onClick={() => router.push('/user/stateAndEffect')}>Go to withStateAndEffect</button>
+           <UserList users={user} />
+           
         </div>
     );
 }

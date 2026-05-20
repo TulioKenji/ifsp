@@ -73,7 +73,7 @@ export default async function Home() {
 
               <div className="flex-1 flex flex-col justify-center p-4 rounded-lg border-2 border-dashed border-red-400 bg-red-50 dark:bg-red-900/10">
                 <span className="text-red-600 dark:text-red-400 font-bold mb-1">Se ocorrer um erro</span>
-                <span className="text-sm">Informa o React para ativar o <br /><strong>Error Boundary</strong></span>
+                <span className="text-sm">Informa o React para ativar o <br /><b>Error Boundary</b></span>
               </div>
             </div>
           </div>

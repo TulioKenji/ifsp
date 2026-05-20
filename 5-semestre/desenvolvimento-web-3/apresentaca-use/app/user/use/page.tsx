@@ -2,27 +2,14 @@ import { Suspense } from "react";
 import UserPage from "@/components/pages/user/withUse"
 import Loading from "@/components/pages/loading";
 
-interface Props {
-    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}
 
 
-
-export default async function Page({ searchParams }: Props) {
-    const params = await searchParams;
-    const userPromise = async () => {
-        const res = await fetch(`http://localhost:3000/api/user/${params?.id ? `${params.id}` : ''}`);
-        const promiseTime = new Promise((resolve) => setTimeout(resolve, 2000));
-        await promiseTime;
-
-
-        return res.json();
-    }
-    const id = params?.id ? `${params.id}` : '';
-
+export default async function Page() {
+    const promiseUsers = fetch(`http://localhost:3000/api/user`).then((res) => res.json()) as Promise<User[]>;
+    const promiseError = fetch(`http://localhost:3000/api/error`).then((res) => res.json()) as Promise<User[]>;
     return (
-            <Suspense fallback={<Loading   />}>
-                <UserPage id={id} />
-            </Suspense>
+        <Suspense fallback={<Loading />}>
+            <UserPage promiseError={promiseError} promiseUsers={promiseUsers} />
+        </Suspense>
     );
 }

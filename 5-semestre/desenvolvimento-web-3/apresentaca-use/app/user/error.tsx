@@ -5,6 +5,7 @@ export default function Error() {
         <div className="flex flex-col items-center gap-10 h-dvh">
             <h1>Custom Error Page</h1>
             <p>Something went wrong while fetching the user data.</p>
+            <a href="/">home</a>
         </div>
     );
 }

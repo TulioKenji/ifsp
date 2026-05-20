@@ -2,32 +2,39 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import UserList from '@/components/ui/userList';
+import { Button } from '@/components/ui/button';
+import Loading from '../../loading';
+import { useSearchParams } from 'next/navigation';
 
-export default function UserPage({ userPromise }: { userPromise: Promise<any> }) {
+const promiseError = ()=>fetch(`http://localhost:3000/api/error`).then((res) => res.json()) as Promise<User[]>;
+const promiseUsers = ()=>fetch(`http://localhost:3000/api/user`).then((res) => res.json()) as Promise<User[]>;
+
+export default function UserPage() {
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
-    console.log('renderizou')
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await userPromise;
-            setUser(data);
-        };
-        fetchData();
-    }, [userPromise]);
+    const error = useSearchParams().get('error');
 
-    if (!user) {
-        return <p>Loading...</p>;
+    const [users, setUsers] = useState<User[] | null>(null);
+    
+    console.log('renderizou')
+    const fetchData = async () => {
+        const data = error? await promiseError() : await promiseUsers();
+        setUsers(data);
+    };
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    if (!users) {
+        return <Loading />;
     }
     return (
-        <div>
-            <h1>{user.name}</h1>
-            <p>{user.email}</p>
-            <div className='flex h-64 justify-center gap-10'>
-                <button onClick={() => router.push('/user/stateAndEffect?id=1')}>SetID</button>
-                <button onClick={() => router.push('/user/stateAndEffect')}>ClearID</button>
-                <button onClick={() => router.push('/user/stateAndEffect?id=2')}>Error</button>
+        <div className='flex flex-col gap-10 p-32'>
+            <div className='flex justify-center gap-20 items-center'>
+                <Button colorType='error' onClick={() => { router.push('/user/use?error=1') }}>Gerar Erro</Button>
             </div>
-            <button onClick={() => router.push('/user/use')}>Go to use</button>
+            <UserList users={users} />
+
         </div>
     );
 }
