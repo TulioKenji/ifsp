@@ -7,18 +7,25 @@ import { Button } from '@/components/ui/button';
 import Loading from '../../loading';
 import { useSearchParams } from 'next/navigation';
 
-const promiseError = ()=>fetch(`http://localhost:3000/api/error`).then((res) => res.json()) as Promise<User[]>;
-const promiseUsers = ()=>fetch(`http://localhost:3000/api/user`).then((res) => res.json()) as Promise<User[]>;
 
 export default function UserPage() {
     const router = useRouter();
     const error = useSearchParams().get('error');
-
+    
+    const promiseError = ()=>fetch(`http://localhost:3000/api/error`).then((res) => res.json()) as Promise<User[]>;
+    const promiseUsers = ()=>fetch(`http://localhost:3000/api/user`).then((res) => res.json()) as Promise<User[]>;
+    
     const [users, setUsers] = useState<User[] | null>(null);
     
     console.log('renderizou')
     const fetchData = async () => {
-        const data = error? await promiseError() : await promiseUsers();
+        let data: User[] = [];
+        if (error) {
+            data = await promiseError();
+        } else {
+            data = await promiseUsers();
+        }
+
         setUsers(data);
     };
     useEffect(() => {

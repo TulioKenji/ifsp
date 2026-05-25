@@ -51,6 +51,7 @@ export default async function Home() {
             <div className="px-6 py-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 w-full text-lg">
               Consome uma promise [const dados = use(promise)]
             </div>
+            
             <span className="text-zinc-400 text-2xl leading-none">↓</span>
 
             <div className="px-8 py-4 rounded-xl bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 border-2 border-purple-400 dark:border-purple-600 w-full text-xl shadow-inner font-mono">
@@ -65,15 +66,33 @@ export default async function Home() {
 
             <span className="text-zinc-400 text-2xl leading-none">↓</span>
 
-            <div className="flex w-full gap-8">
-              <div className="flex-1 flex flex-col justify-center p-4 rounded-lg border-2 border-dashed border-amber-400 bg-amber-50 dark:bg-amber-900/10">
+            <div className="flex w-full gap-8 flex-wrap">
+              <div className="w-1/2 flex-1 flex flex-col justify-center p-4 rounded-lg border-2 border-dashed border-amber-400 bg-amber-50 dark:bg-amber-900/10">
                 <span className="text-amber-600 dark:text-amber-400 font-bold mb-1">Se estiver Pendente</span>
                 <span className="text-sm">Informa o React para ativar o <br /><strong>Suspense</strong></span>
               </div>
 
-              <div className="flex-1 flex flex-col justify-center p-4 rounded-lg border-2 border-dashed border-red-400 bg-red-50 dark:bg-red-900/10">
+              <div className="w-1/2 flex-1 flex flex-col justify-center p-4 rounded-lg border-2 border-dashed border-red-400 bg-red-50 dark:bg-red-900/10">
                 <span className="text-red-600 dark:text-red-400 font-bold mb-1">Se ocorrer um erro</span>
                 <span className="text-sm">Informa o React para ativar o <br /><b>Error Boundary</b></span>
+              </div>
+              <div
+                className="w-full flex justify-around gap-4 p-4 rounded-lg border-2 border-dashed border-blue-400 bg-blue-900/20" 
+              >
+                <Link
+                  href="https://react.dev/reference/react/use#displaying-an-error-to-users-with-error-boundary"
+                  target="_blank"
+                  className="p-2 rounded-lg bg-black/20 border-2 border-dashed border-black/50"
+                >
+                  Exemplo na documentação oficial do React
+                </Link>
+                <Link
+                  href="https://www.npmjs.com/package/react-error-boundary"
+                  target="_blank"
+                  className="p-2 rounded-lg bg-black/20 border-2 border-dashed border-black/50"
+                >
+                  Biblioteca usada na documentação
+                </Link>
               </div>
             </div>
           </div>
