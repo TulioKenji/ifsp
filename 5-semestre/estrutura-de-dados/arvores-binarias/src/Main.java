@@ -103,6 +103,8 @@ public static void exibir(){
 
 }
 
+
+
 static void exibeArvore(NoA n, int x){
     if(raiz == null){
         System.out.println("vazio");
