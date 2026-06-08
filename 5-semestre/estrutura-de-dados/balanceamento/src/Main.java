@@ -116,10 +116,10 @@ public static void rodar(NoA x, int direcao){
     }
 
     if(direcao == -1){
-        girarEsquerda(x);
-        return;
+        raiz = girarEsquerda(x);
+    }else{
+        raiz = girarDireita(x);
     }
-    girarDireita(x);
 }
 
 public static NoA girarDireita(NoA x){
