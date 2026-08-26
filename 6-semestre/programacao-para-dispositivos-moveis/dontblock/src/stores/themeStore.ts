@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 
 interface Theme {
   colors: {
@@ -10,6 +10,7 @@ interface Theme {
     primaryDark: string;
 
     text: string;
+    textLight: string;
     textSecondary: string;
     textTertiary: string;
 
@@ -70,6 +71,7 @@ const lightTheme: Theme = {
     primaryDark: "#3730A3",
 
     text: "#111827",
+    textLight: "#F9FAFB",
     textSecondary: "#6B7280",
     textTertiary: "#9CA3AF",
 
@@ -122,6 +124,7 @@ const darkTheme: Theme = {
     primaryDark: "#5D65F5",
 
     text: "#F8FAFC",
+    textLight: "#F9FAFB",
     textSecondary: "#B4BCC8",
     textTertiary: "#7B8494",
 

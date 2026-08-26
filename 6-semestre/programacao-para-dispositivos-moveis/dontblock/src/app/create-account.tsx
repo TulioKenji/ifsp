@@ -1,18 +1,31 @@
+import Input from '@/components/inputs';
+import { userSchema } from '@/schemas/user';
 import { useThemeStore } from '@/stores/themeStore';
-import { Link, useRouter } from 'expo-router';
-import { FileExclamationPoint, Settings } from 'lucide-react-native';
-import { useMemo } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { FileExclamationPoint } from 'lucide-react-native';
+import { useMemo, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as v from 'valibot';
 
-export default function LoginScreen() {
+export default function CreateAccountScreen() {
   const { theme } = useThemeStore();
   const router = useRouter();
-  const handleLogin = () => {
-    router.push('/home');
-  }
+
+  const [user, setUser] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleCreateAccount = () => {
-    router.push('/create-account');
+    const newUser = {
+      user,
+      password,
+    };
+    try {
+        const parse = v.parse(userSchema, newUser);
+    }catch (error) {
+        console.log(error);
+    }
+    router.push('/');
+    
   }
 
   const styles = useMemo(() => StyleSheet.create({
@@ -20,6 +33,7 @@ export default function LoginScreen() {
       flex: 1,
       backgroundColor: theme.colors.background,
       paddingHorizontal: theme.spacing.md,
+      justifyContent: 'center',
     },
 
     header: {
@@ -116,40 +130,35 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Settings size={24} color={theme.colors.text} />
-      </View>
       <View style={styles.main}>
         <Text style={styles.title}>Don't Block</Text>
         <FileExclamationPoint size={48} color={theme.colors.primary} />
       </View>
       <View style={styles.login}>
-        <Text style={styles.subtitle}>Faça login para continuar</Text>
+        <Text style={styles.subtitle}>Crie uma nova conta</Text>
         <View style={styles.form}>
-          <TextInput
+          <Input
             placeholder="Usuário"
-            placeholderTextColor={theme.colors.textSecondary}
-            style={styles.input}
+            label="Usuário"
+            value={user}
+            onChangeText={setUser}
+            // placeholderTextColor={theme.colors.textSecondary}
+            // style={styles.input}
           />
-          <TextInput
+          <Input.Password
+            value={password}
+            onChangeText={setPassword}
+            label="Senha"
             placeholder="Senha"
-            placeholderTextColor={theme.colors.textSecondary}
-            style={styles.input}
-            secureTextEntry
+            // placeholderTextColor={theme.colors.textSecondary}
+            // style={styles.input}
+            // secureTextEntry
           />
         </View>
-        <Link style={styles.forgotPassword} href="/home">
-          Esqueceu a senha?
-        </Link>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
+          <Text style={styles.buttonText}>Criar Conta</Text>
         </TouchableOpacity>
-        <View style={styles.newAccount}>
-          <Text style={styles.subtitle}>Não tem uma conta?</Text>
-          <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
-            <Text style={styles.buttonText}>Criar Conta</Text>
-          </TouchableOpacity>
-        </View>
+       
       </View>
     </View>
   )
