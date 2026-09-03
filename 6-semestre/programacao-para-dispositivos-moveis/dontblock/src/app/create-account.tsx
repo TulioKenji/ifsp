@@ -1,28 +1,43 @@
 import Input from '@/components/inputs';
-import { userSchema } from '@/schemas/user';
+import { useToast } from '@/hooks/useToast';
+import { parseForm } from '@/schemas/parseForm';
+import { userPayloadSchema } from '@/schemas/user';
 import { useThemeStore } from '@/stores/themeStore';
+import { useUsersStore } from '@/stores/userStore';
 import { useRouter } from 'expo-router';
 import { FileExclamationPoint } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import * as v from 'valibot';
+import { uuidv7 } from 'uuidv7';
 
 export default function CreateAccountScreen() {
   const { theme } = useThemeStore();
   const router = useRouter();
+  const { addUser } = useUsersStore();
+  const { showToast } = useToast();
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<{ user?: string; password?: string }>({});
 
   const handleCreateAccount = () => {
-    const newUser = {
-      user,
-      password,
-    };
     try {
-        const parse = v.parse(userSchema, newUser);
+        const parse = parseForm(userPayloadSchema, {user, password});
+
+        if(!parse.success) {
+            setErrors(parse.errors??{});
+            return;
+        }
+
+        addUser({
+          id: uuidv7(),
+          user,
+          password
+        });
+        showToast('success', 'Conta criada com sucesso!');
+        router.push('/');
     }catch (error) {
-        console.log(error);
+       showToast('error', 'Erro ao criar conta', (error as Error).message);
     }
     router.push('/');
     
@@ -142,6 +157,7 @@ export default function CreateAccountScreen() {
             label="Usuário"
             value={user}
             onChangeText={setUser}
+            error={errors.user}
             // placeholderTextColor={theme.colors.textSecondary}
             // style={styles.input}
           />
@@ -150,6 +166,7 @@ export default function CreateAccountScreen() {
             onChangeText={setPassword}
             label="Senha"
             placeholder="Senha"
+            error={errors.password}
             // placeholderTextColor={theme.colors.textSecondary}
             // style={styles.input}
             // secureTextEntry

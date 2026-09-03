@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 
-export const userSchema = v.object({
+export const userPayloadSchema = v.object({
     user: v.pipe(v.string(),
         v.trim(),
         v.minLength(6, 'O nome de usuário deve ter pelo menos 6 caracteres')
@@ -15,4 +15,13 @@ export const userSchema = v.object({
     )
 });
 
+export type UserPayload = v.InferOutput<typeof userPayloadSchema>;
+
+export const userSchema = v.object({
+    id: v.string(),
+    user: v.string(),
+    password: v.string()
+});
 export type User = v.InferOutput<typeof userSchema>;
+
+
