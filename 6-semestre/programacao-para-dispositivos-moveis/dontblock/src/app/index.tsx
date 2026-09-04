@@ -1,18 +1,51 @@
+import { useToast } from '@/hooks/useToast';
+import { parseForm } from '@/schemas/parseForm';
+import { userPayloadSchema } from '@/schemas/user';
 import { useThemeStore } from '@/stores/themeStore';
+import { useUsersStore } from '@/stores/userStore';
 import { Link, useRouter } from 'expo-router';
 import { FileExclamationPoint, Settings } from 'lucide-react-native';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function LoginScreen() {
   const { theme } = useThemeStore();
   const router = useRouter();
+  const { showToast } = useToast();
+
+  const { users } = useUsersStore();
+
+  const [user, setUser] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [errors, setErrors] = useState<{ user?: string; password?: string }>({});
+
   const handleLogin = () => {
-    router.push('/home');
+    const parse = parseForm(userPayloadSchema, {user, password});
+
+    if(!parse.success) {
+        setErrors(parse.errors??{});
+        return;
+    }
+
+    const login = users[user];
+    if(login && login.password === password) {
+        showToast('success', 'Login realizado com sucesso!');
+        router.push('/home');
+        return;
+    }
+
+    showToast('error', 'Usuário ou senha incorretos!');
+
+    // router.push('/home');
   }
 
   const handleCreateAccount = () => {
     router.push('/create-account');
+  }
+
+  const handleForgotPassword = () => {
+    router.push('/forgot-password');
   }
 
   const styles = useMemo(() => StyleSheet.create({
@@ -130,11 +163,15 @@ export default function LoginScreen() {
             placeholder="Usuário"
             placeholderTextColor={theme.colors.textSecondary}
             style={styles.input}
+            value={user}
+            onChangeText={setUser}
           />
           <TextInput
             placeholder="Senha"
             placeholderTextColor={theme.colors.textSecondary}
             style={styles.input}
+            value={password}
+            onChangeText={setPassword}
             secureTextEntry
           />
         </View>

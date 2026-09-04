@@ -21,30 +21,32 @@ const mmkvStorage: StateStorage = {
 };
 
 interface UsersState {
-  users: User[];
+  users: Record<string, User>;
   addUser: (user: User) => void;
-  removeUser: (userId: User['id']) => void;
+  removeUser: (userId: User['user']) => void;
   clearUsers: () => void;
 }
 
 export const useUsersStore = create<UsersState>()(
   persist(
     (set) => ({
-      users: [],
+      users: {},
 
       addUser: (user) =>
         set((state) => ({
-          users: [...state.users, user],
+          users: { ...state.users, [user.user]: user },
         })),
 
-      removeUser: (userId) =>
+      removeUser: (user) =>
         set((state) => ({
-          users: state.users.filter((user) => user.id !== userId),
+          users: Object.fromEntries(
+            Object.entries(state.users).filter(([key]) => key !== user)
+          ),
         })),
 
       clearUsers: () =>
         set({
-          users: [],
+          users: {},
         }),
     }),
     {

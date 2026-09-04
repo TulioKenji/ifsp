@@ -23,6 +23,8 @@ export default function AppTabs() {
       <Stack.Screen name="index" options={{title:"Home"}} />
       <Stack.Screen name="home" options={{}} />
       <Stack.Screen name="explore" options={{}} />
+      <Stack.Screen name="create-account" options={{title:"Criar Conta"}} />
+      <Stack.Screen name="forgot-password" options={{title:"Esqueci minha senha"}} />
     </Stack>
   );
 }

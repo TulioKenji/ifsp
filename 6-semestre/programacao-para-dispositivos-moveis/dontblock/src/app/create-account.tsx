@@ -8,7 +8,6 @@ import { useRouter } from 'expo-router';
 import { FileExclamationPoint } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { uuidv7 } from 'uuidv7';
 
 export default function CreateAccountScreen() {
   const { theme } = useThemeStore();
@@ -30,7 +29,7 @@ export default function CreateAccountScreen() {
         }
 
         addUser({
-          id: uuidv7(),
+          // id: uuidv7(),
           user,
           password
         });

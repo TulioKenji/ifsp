@@ -18,7 +18,7 @@ export const userPayloadSchema = v.object({
 export type UserPayload = v.InferOutput<typeof userPayloadSchema>;
 
 export const userSchema = v.object({
-    id: v.string(),
+    // id: v.string(),
     user: v.string(),
     password: v.string()
 });
