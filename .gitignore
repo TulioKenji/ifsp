@@ -14,6 +14,7 @@ build
 *.dll
 *.doc
 *.txt
+!requirements.txt
 
 # Python virtual environments
 venv/
