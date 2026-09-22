@@ -1,0 +1,6 @@
+# config.py
+
+BASE_URL = "http://127.0.0.1:1234/v1"
+API_KEY = "lm-studio"
+
+MODEL = "smollm3-3b"
