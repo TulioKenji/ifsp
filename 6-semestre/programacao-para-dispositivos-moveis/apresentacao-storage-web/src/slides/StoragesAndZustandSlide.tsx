@@ -78,6 +78,9 @@ export function StoragesAndZustandSlide() {
         </div>
       </div>
 
+
+
+
       <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-amber-400" />
         Exemplo com MMKV
@@ -165,6 +168,176 @@ export const useCart = create<CartState>()
     );
 `}
       />
+
+      <h3 className="text-lg font-semibold text-white mb-4 mt-8 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-amber-500" />
+        Exemplo com AsyncStorage (Assíncrono)
+      </h3>
+      <CodeBlock
+        title="useAsyncStore.ts"
+        code={`import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+
+interface ThemeState {
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+}
+
+// AsyncStorage já possui a assinatura exata do StateStorage nativamente.
+// Não é necessário criar um adapter customizado!
+export const useThemeStore = create<ThemeState>()(
+  persist(
+    (set) => ({
+      theme: 'light',
+      setTheme: (theme) => set({ theme }),
+    }),
+    {
+      name: 'theme-storage',
+      // Passa a referência do AsyncStorage diretamente
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);`}
+      />
+      <h3 className="text-lg font-semibold text-white mb-4 mt-8 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-rose-400" />
+        Exemplo com Expo SecureStore (Assíncrono Seguro)
+      </h3>
+      <CodeBlock
+        title="useSecureAuth.ts"
+        code={`import * as SecureStore from 'expo-secure-store';
+import { create } from 'zustand';
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
+
+interface AuthState {
+  token: string | null;
+  setToken: (token: string) => void;
+  logout: () => void;
+}
+
+// Criando o Adapter para mapear os métodos do SecureStore
+const secureStorage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    return await SecureStore.getItemAsync(name);
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    await SecureStore.setItemAsync(name, value);
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await SecureStore.deleteItemAsync(name);
+  },
+};
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      token: null,
+      setToken: (token) => set({ token }),
+      logout: () => set({ token: null }),
+    }),
+    {
+      name: 'auth-vault', // Nome da chave no SecureStore
+      storage: createJSONStorage(() => secureStorage),
+    }
+  )
+);`}
+      />
+
+      <h3 className="text-lg font-semibold text-white mb-4 mt-8 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-cyan-400" />
+        Exemplo com Expo SQLite (Síncrono JSI / Relacional)
+      </h3>
+      <CodeBlock
+        title="useSqliteStore.ts"
+        code={`import { openDatabaseSync } from 'expo-sqlite';
+import { create } from 'zustand';
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware';
+
+// 1. Abre o banco usando a nova API Síncrona (JSI)
+const db = openDatabaseSync('zustand_cache.db');
+
+// 2. Garante que a tabela de chave-valor existe
+db.execSync(\`
+  CREATE TABLE IF NOT EXISTS store (
+    key TEXT PRIMARY KEY NOT NULL,
+    value TEXT NOT NULL
+  );
+\`);
+
+// 3. Adapter executando as queries SQL
+const sqliteStorage: StateStorage = {
+  getItem: (name: string): string | null => {
+    const result = db.getFirstSync<{value: string}>(
+      'SELECT value FROM store WHERE key = ?',
+      [name]
+    );
+    return result ? result.value : null;
+  },
+  setItem: (name: string, value: string): void => {
+    // INSERT OR REPLACE garante o update se a chave já existir
+    db.runSync('INSERT OR REPLACE INTO store (key, value) VALUES (?, ?)', [name, value]);
+  },
+  removeItem: (name: string): void => {
+    db.runSync('DELETE FROM store WHERE key = ?', [name]);
+  },
+};
+
+interface SettingsState {
+  notifications: boolean;
+  toggleNotifications: () => void;
+}
+
+export const useSettingsStore = create<SettingsState>()(
+  persist(
+    (set) => ({
+      notifications: true,
+      toggleNotifications: () => set((state) => ({ notifications: !state.notifications })),
+    }),
+    {
+      name: 'settings',
+      storage: createJSONStorage(() => sqliteStorage),
+    }
+  )
+);`}
+      />
+
+      <div className="space-y-4 my-8">
+        <div className="rounded-xl border border-white/10 bg-slate-900/50 p-5 space-y-4">
+          <p className="text-xl text-slate-300">
+            Uma dúvida comum arquitetural: se o <code className="text-emerald-300 bg-emerald-500/10 px-1 py-0.5 rounded">AsyncStorage</code> ou <code className="text-rose-300 bg-rose-500/10 px-1 py-0.5 rounded">SecureStore</code> gravam no disco de forma assíncrona, por que as funções do Zustand (como <code className="text-cyan-300 bg-cyan-500/10 px-1 py-0.5 rounded">setTheme</code>) não retornam uma <code className="text-slate-400">Promise</code>?
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="border border-cyan-500/20 bg-cyan-500/5 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">⚡</span>
+                <p className="font-semibold text-cyan-300 text-md">1. Estado em RAM (Síncrono)</p>
+              </div>
+              <p className="text-md text-slate-400 leading-relaxed">
+                O Zustand opera primariamente na memória RAM. Quando você chama uma action, a alteração de estado na memória e a re-renderização da UI ocorrem instantaneamente.
+              </p>
+            </div>
+
+            <div className="border border-indigo-500/20 bg-indigo-500/5 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">👻</span>
+                <p className="font-semibold text-indigo-300 text-md">2. Gravação Background (Assíncrona)</p>
+              </div>
+              <p className="text-md text-slate-400 leading-relaxed">
+                O middleware <code className="text-indigo-200">persist</code> "escuta" a mudança na RAM e dispara a gravação no disco em background, lidando com o I/O silenciosamente sem bloquear o usuário.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2 border-l-4 border-amber-500/50 bg-amber-500/10 p-3 rounded-r-lg">
+            <p className="text-md text-amber-200">
+              <span className="font-bold">Atenção à Hidratação:</span> O único momento de bloqueio lógico é ao abrir o app. O Zustand inicia com o valor default da memória, busca no disco, e então re-hidrata o estado, podendo causar um <em>flicker</em> visual na tela se não houver um loading inicial.
+            </p>
+          </div>
+        </div>
+      </div>
+
     </SlideWrapper>
   );
 }

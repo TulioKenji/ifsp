@@ -19,34 +19,29 @@ export function HomeSlide() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
-        <FeatureCard
-          icon={<span className="text-2xl">📦</span>}
-          title="AsyncStorage"
-          description="A base do storage no React Native"
-          color="indigo"
-        />
+      <div className="grid grid-cols-4 gap-4 mb-12">
+       
         <FeatureCard
           icon={<span className="text-2xl">⚡</span>}
           title="MMKV"
-          description="Ultra rápido, criado pelo WeChat"
+          description="Ultra rápido, criado pelo WeChat (Tencent)"
           color="cyan"
         />
         <FeatureCard
           icon={<span className="text-2xl">🔒</span>}
-          title="SecureStore"
+          title="Expo SecureStore"
           description="Dados criptografados e seguros"
           color="emerald"
         />
         <FeatureCard
           icon={<span className="text-2xl">🗄️</span>}
-          title="SQLite"
+          title="Expo SQLite"
           description="Base de dados local para armazenamento de dados estruturados"
           color="amber"
         />
         <FeatureCard
           icon={<span className="text-2xl">🐻</span>}
-          title="Zustand"
+          title="Zustand Middleware"
           description="State management com persistência"
           color="amber"
         />

@@ -7,6 +7,7 @@ import { ExpoSecureStoreSlide } from './slides/ExpoSecureStoreSlide';
 import { StoragesAndZustandSlide } from './slides/StoragesAndZustandSlide';
 import { BenchmarksSlide } from './slides/BenchmarksSlide';
 import { ConclusionSlide } from './slides/ConclusionSlide';
+import { ReferenciasSlide } from './slides/ReferenciasSlide';
 
 const slides = [
   { id: 'home', title: 'Home', component: HomeSlide },
@@ -15,6 +16,7 @@ const slides = [
   { id: 'storages-zustand', title: 'Storages & Zustand', component: StoragesAndZustandSlide },
   { id: 'benchmarks', title: 'Benchmarks', component: BenchmarksSlide },
   { id: 'conclusion', title: 'Conclusão', component: ConclusionSlide },
+  {id: 'referencias', title: 'Referências', component: ReferenciasSlide}
 ];
 
 export default function App() {
