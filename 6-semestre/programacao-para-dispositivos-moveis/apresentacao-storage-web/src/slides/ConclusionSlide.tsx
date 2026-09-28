@@ -85,31 +85,7 @@ export function ConclusionSlide() {
         </div>
       </div>
 
-      {/* Final tip */}
-      <div className="rounded-xl border border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-6 animate-fade-in-delay-3">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
-            <span className="text-2xl">💡</span>
-          </div>
-          <div>
-            <h3 className="text-white font-semibold mb-2">Dica Final</h3>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Crie uma camada de abstração sobre os storages para facilitar a troca entre eles. 
-              Isso permite usar MMKV em desenvolvimento e SecureStore para dados sensíveis, 
-              sem que o resto da aplicação precise saber qual storage está sendo usado.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="px-2 py-1 rounded-md text-xs bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">MMKV</span>
-              <span className="text-slate-500">+</span>
-              <span className="px-2 py-1 rounded-md text-xs bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">SecureStore</span>
-              <span className="text-slate-500">+</span>
-              <span className="px-2 py-1 rounded-md text-xs bg-amber-500/10 text-amber-300 border border-amber-500/20">Zustand</span>
-              <span className="text-slate-500">=</span>
-              <span className="px-2 py-1 rounded-md text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-semibold">✨ Stack Perfeita</span>
-            </div>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Thank you */}
       <div className="text-center mt-12 animate-fade-in-delay-5">

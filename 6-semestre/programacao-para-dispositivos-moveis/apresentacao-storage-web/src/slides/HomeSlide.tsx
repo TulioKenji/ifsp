@@ -15,11 +15,11 @@ export function HomeSlide() {
         <SlideTitle
           badge="Apresentação Técnica"
           title="Storages no React Native"
-          subtitle="Uma análise completa das soluções de armazenamento local: AsyncStorage, MMKV, Expo SecureStore e integração com Zustand"
+          subtitle="Uma análise completa das soluções de armazenamento local: AsyncStorage, MMKV, Expo SecureStore, SQLite e integração com Zustand"
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
         <FeatureCard
           icon={<span className="text-2xl">📦</span>}
           title="AsyncStorage"
@@ -37,6 +37,12 @@ export function HomeSlide() {
           title="SecureStore"
           description="Dados criptografados e seguros"
           color="emerald"
+        />
+        <FeatureCard
+          icon={<span className="text-2xl">🗄️</span>}
+          title="SQLite"
+          description="Base de dados local para armazenamento de dados estruturados"
+          color="amber"
         />
         <FeatureCard
           icon={<span className="text-2xl">🐻</span>}

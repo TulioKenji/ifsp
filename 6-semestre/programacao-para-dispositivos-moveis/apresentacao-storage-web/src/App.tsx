@@ -28,6 +28,7 @@ export default function App() {
     setIsTransitioning(true);
     setTimeout(() => {
       setCurrentSlide(index);
+      window.scrollTo(0, 0); // Reset scroll position on slide change
       setIsTransitioning(false);
     }, 50);
   }, [currentSlide, isTransitioning]);
@@ -86,9 +87,9 @@ export default function App() {
       </main>
 
       {/* Keyboard navigation hint */}
-      <div className="fixed bottom-4 right-4 text-xs text-slate-500 hidden md:block">
+      {/* <div className="fixed bottom-4 right-4 text-xs text-slate-500 hidden md:block">
         Use ← → para navegar
-      </div>
+      </div> */}
     </div>
   );
 }

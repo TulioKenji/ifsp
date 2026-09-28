@@ -20,7 +20,7 @@ export function CodeBlock({ code, language = 'typescript', title }: CodeBlockPro
           <span className="ml-auto text-[10px] text-slate-500 uppercase tracking-wider">{language}</span>
         </div>
       )}
-      <pre className="p-4 overflow-x-auto text-sm">
+      <pre className="p-4 overflow-x-auto text-md">
         <code className="text-slate-300 font-mono leading-relaxed whitespace-pre">{code}</code>
       </pre>
     </div>
@@ -47,7 +47,7 @@ export function FeatureCard({ icon, title, description, color = 'indigo' }: Feat
     <div className={`rounded-xl border bg-gradient-to-br p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${colorMap[color]}`}>
       <div className="mb-3">{icon}</div>
       <h3 className="text-base font-semibold text-white mb-1">{title}</h3>
-      <p className="text-sm text-slate-400 leading-relaxed">{description}</p>
+      <p className="text-md text-slate-400 leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -66,7 +66,7 @@ export function SlideWrapper({ children, maxWidth = 'xl' }: SlideWrapperProps) {
   };
 
   return (
-    <div className={`${maxWidthClass[maxWidth]} mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12`}>
+    <div className={`w-[90%] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12`}>
       {children}
     </div>
   );
@@ -91,7 +91,7 @@ export function SlideTitle({ badge, title, subtitle }: SlideTitleProps) {
         {title}
       </h2>
       {subtitle && (
-        <p className="text-lg text-slate-400 max-w-2xl animate-fade-in-delay-2">
+        <p className="text-lg text-center text-slate-400 animate-fade-in-delay-2">
           {subtitle}
         </p>
       )}
