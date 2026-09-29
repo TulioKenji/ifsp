@@ -47,23 +47,6 @@ export function HomeSlide() {
         />
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 p-6 animate-fade-in-delay-3">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-            <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-white font-semibold mb-1">Tópicos da apresentação</h3>
-            <p className="text-sm text-slate-400">
-              Vamos explorar cada solução de storage, entender quando usar cada uma, 
-              comparar performance com benchmarks reais e ver como integrá-las com Zustand 
-              para gerenciamento de estado persistente.
-            </p>
-          </div>
-        </div>
-      </div>
     </SlideWrapper>
   );
 }

@@ -123,11 +123,11 @@ export function ExpoSecureStoreSlide() {
               <span className="text-2xl">🌉</span>
               <h4 className="font-bold text-rose-300">1. JS Thread & Bridge</h4>
             </div>
-            <p className="text-xs text-slate-300">
-              Diferente do MMKV que usa <strong>JSI</strong> para acesso síncrono e direto à memória C++, o SecureStore depende de chamadas <strong>assíncronas</strong>.
+            <p className="text-md text-slate-300">
+              Mesmo usando o JSI e expo-native-modules, o SecureStore depende de chamadas <strong>assíncronas</strong>.
             </p>
-            <p className="text-xs text-slate-300">
-              Isso ocorre porque a criptografia de hardware requer chamadas de I/O do sistema operacional e, frequentemente, interação com a UI (como o prompt do FaceID), obrigando o tráfego de dados pela <strong>React Native Bridge</strong> (ou Expo Modules Core) até a thread nativa.
+            <p className="text-md text-slate-300">
+              Isso ocorre porque a criptografia de hardware requer chamadas de I/O do sistema operacional e, frequentemente, interação com a UI (como o prompt do FaceID),.
             </p>
           </div>
 
@@ -137,10 +137,10 @@ export function ExpoSecureStoreSlide() {
               <span className="text-2xl">⚙️</span>
               <h4 className="font-bold text-indigo-300">2. Native OS (Keystore/Keychain)</h4>
             </div>
-            <p className="text-xs text-slate-300">
-              O código Java/Kotlin ou Swift recebe a string via Bridge e aciona as APIs de segurança do SO.
+            <p className="text-md text-slate-300">
+              O código Java/Kotlin ou Swift recebe a string via expo-native-modules e aciona as APIs de segurança do SO.
             </p>
-            <p className="text-xs text-slate-300">
+            <p className="text-md text-slate-300">
               Nesta etapa, o dado em texto plano entra na API, mas a <strong>chave de criptografia</strong> real NUNCA fica acessível na memória RAM (Heap) do aplicativo. O SO delega o trabalho pesado para o hardware.
             </p>
           </div>
@@ -151,10 +151,10 @@ export function ExpoSecureStoreSlide() {
               <span className="text-2xl">🛡️</span>
               <h4 className="font-bold text-emerald-300">3. Hardware (TEE / Enclave)</h4>
             </div>
-            <p className="text-xs text-slate-300">
+            <p className="text-md text-slate-300">
               A criptografia acontece no <strong>TEE (Trusted Execution Environment)</strong> no Android, ou no <strong>Secure Enclave</strong> no iOS.
             </p>
-            <p className="text-xs text-slate-300">
+            <p className="text-md text-slate-300">
               É um co-processador físico isolado do processador principal. Se o seu app ou o OS for hackeado, o invasor só verá dados embaralhados, pois a chave mestra está fisicamente "trancada" dentro deste chip de segurança.
             </p>
           </div>

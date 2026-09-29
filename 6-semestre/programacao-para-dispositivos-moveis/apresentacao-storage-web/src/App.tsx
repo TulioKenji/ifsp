@@ -16,7 +16,7 @@ const slides = [
   { id: 'expo-secure-store', title: 'Expo SecureStore', component: ExpoSecureStoreSlide },
   { id: 'expo-sqlite', title: 'Expo SQLite', component: ExpoSQLiteSlide },
   { id: 'storages-zustand', title: 'Storages & Zustand', component: StoragesAndZustandSlide },
-  { id: 'benchmarks', title: 'Benchmarks', component: BenchmarksSlide },
+  // { id: 'benchmarks', title: 'Benchmarks', component: BenchmarksSlide },
   { id: 'conclusion', title: 'Conclusão', component: ConclusionSlide },
   {id: 'referencias', title: 'Referências', component: ReferenciasSlide}
 ];

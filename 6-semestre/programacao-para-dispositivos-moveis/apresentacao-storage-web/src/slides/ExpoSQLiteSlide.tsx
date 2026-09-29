@@ -18,6 +18,12 @@ export function ExpoSQLiteSlide() {
           </h3>
           <div className="space-y-3">
             <FeatureCard
+              icon={<span className="text-xl">📱</span>}
+              title="Suporte Multiplataforma (Min Targets)"
+              description="Requisitos base: Android 5.0 (API 21+) e iOS 13.0+. A versão mais atual (~57.0.3) acompanha as diretrizes modernas do ecossistema Expo e métricas mais recentes do React Native (0.76+)."
+              color="cyan"
+            />
+            <FeatureCard
               icon={<span className="text-xl">🛡️</span>}
               title="Garantia ACID"
               description="Assegura transações seguras: Atomicidade (tudo ou nada), Consistência (regras estruturais mantidas), Isolamento (operações concorrentes não interferem) e Durabilidade (dados persistem pós-falha)."
@@ -90,6 +96,86 @@ export function ExpoSQLiteSlide() {
         </div>
       </div>
 
+      {/* Seção de Arquitetura Profunda (Expo SQLite) */}
+      <div className="space-y-4 mb-8 mt-4">
+        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-cyan-400" />
+          Arquitetura JSI e Comunicação Nativa 
+        </h3>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Camada JS & JSI */}
+          <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">⚡</span>
+              <h4 className="font-bold text-cyan-300">1. JS Thread & JSI</h4>
+            </div>
+            <p className="text-md text-slate-300">
+              O Expo SQLite utiliza o <strong>JSI (JavaScript Interface)</strong>.
+            </p>
+            <p className="text-md text-slate-300">
+              Isso permite que o código JavaScript chame as funções escritas em C++ de forma <strong>direta</strong>, compartilhando a mesma memória e eliminando o gargalo brutal da serialização e desserialização via JSON.
+            </p>
+          </div>
+
+          {/* Camada Engine C++ */}
+          <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">⚙️</span>
+              <h4 className="font-bold text-indigo-300">2. Motor SQLite (C++)</h4>
+            </div>
+            <p className="text-md text-slate-300">
+              O coração do banco de dados roda nativamente em uma engine de C++ de altíssima performance embarcada no aplicativo.
+            </p>
+            <p className="text-md text-slate-300">
+              Ele recebe a query SQL diretamente do JSI, compila <i>(Prepared Statements)</i> e gerencia a criptografia (SQLCipher) em memória de forma transparente, garantindo as propriedades ACID.
+            </p>
+          </div>
+
+          {/* Camada de FileSystem */}
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">🗄️</span>
+              <h4 className="font-bold text-emerald-300">3. Disco (File System)</h4>
+            </div>
+            <p className="text-md text-slate-300">
+              A engine C++ realiza a leitura e escrita física no arquivo local (ex: <code>main.db</code>) que fica armazenado em uma Sandbox segura do iOS ou Android.
+            </p>
+            <p className="text-md text-slate-300">
+              Graças ao <strong>Write-Ahead Logging (WAL)</strong>, o sistema operacional otimiza o I/O no disco físico, permitindo leituras e escritas concorrentes sem corrupção.
+            </p>
+          </div>
+        </div>
+
+        {/* Representação Arquitetural em CodeBlock */}
+        <div className="mt-4">
+          <CodeBlock
+            title="Fluxo-Arquitetural-SQLite.txt"
+            code={`// O que acontece quando você chama db.getFirstSync("SELECT * FROM users")?
+
+[JS Thread] 
+  1. JS invoca db.getFirstSync() passando a query de consulta.
+  2. A thread do JS congela aguardando a resposta rápida da memória (Síncrono).
+
+  ⏬ (Acesso DIRETO via JSI - Nenhuma Bridge, Nenhum JSON) ⏬
+
+[Native C++ Engine (SQLite)]
+  3. A função C++ acessa a string da query diretamente no Heap do JavaScript.
+  4. O motor analisa, otimiza e prepara o plano de execução SQL.
+
+  ⏬ (Operação I/O otimizada pelo Kernel do SO) ⏬
+
+[Disco / File System]
+  5. A engine C++ localiza os blocos de dados no arquivo .db.
+  6. Os registros são recuperados e carregados para a memória RAM.
+
+[Retorno Imediato JSI]
+  7. O C++ mapeia as colunas do SQLite para variáveis do JavaScript.
+  8. A Thread do JS é liberada com um objeto pronto para uso: { id: 1, name: "Tulio" }.`}
+          />
+        </div>
+      </div>
+
       {/* Criptografia e Configuração */}
       <div className="grid grid-cols-1 gap-6 my-12">
         <div>
@@ -156,7 +242,7 @@ export async function initDatabase() {
           <span className="w-2 h-2 rounded-full bg-emerald-400" />
           Operações, Prepared Statements e Transações ACID
         </h3>
-        
+
         <div className="grid grid-cols-1 gap-6">
           <CodeBlock
             title="crud-operations.ts"
