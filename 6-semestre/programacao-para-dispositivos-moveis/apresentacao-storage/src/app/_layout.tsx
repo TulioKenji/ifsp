@@ -31,7 +31,7 @@ export default function RootLayout() {
           animation: 'fade',
         }}
       >
-        <Stack.Screen
+        {/* <Stack.Screen
           name="index"
           options={{
             title: 'React Native Storage',
@@ -57,7 +57,7 @@ export default function RootLayout() {
           options={{
             title: 'Storages + Zustand',
           }}
-        />
+        /> */}
 
         <Stack.Screen
           name="benchmarks"

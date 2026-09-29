@@ -4,7 +4,7 @@ export function ExpoSecureStoreSlide() {
   return (
     <SlideWrapper>
       <SlideTitle
-        badge="Segurança Máxima"
+        badge="Q"
         title="Expo SecureStore"
         subtitle="Armazenamento assíncrono fortemente criptografado (TEE). Utiliza Keystore (Android) e Keychain (iOS) para isolamento em nível de hardware."
       />

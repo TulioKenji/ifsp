@@ -1,81 +1,167 @@
 // app/(presentation)/benchmarks.tsx
 
+import { useMemo, useState } from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 
-import { PresentationScreen } from '@/components/PresentationScreen';
+import { BenchRow, buildItems, runBenchmark } from '@/benchmarks/runBenchmark';
+import { cartItens } from '@/constants/cartItens';
+
+const MULTIPLIERS = [1, 10, 100];
 
 export default function BenchmarksScreen() {
+  const [multiplier, setMultiplier] = useState(10);
+  const [running, setRunning] = useState(false);
+  const [progress, setProgress] = useState('');
+  const [rows, setRows] = useState<BenchRow[]>([]);
+
+  const totalItems = cartItens.length * multiplier;
+
+  async function handleRun() {
+    setRunning(true);
+    setRows([]);
+    // deixa o React renderizar o loading antes de travar a thread JS
+    await new Promise((r) => setTimeout(r, 50));
+    try {
+      const result = await runBenchmark(buildItems(multiplier), setProgress);
+      setRows(result);
+      console.table(result);
+    } catch (e) {
+      console.error('Benchmark error', e);
+    } finally {
+      setRunning(false);
+      setProgress('');
+    }
+  }
+
+  // agrupa: [group + scenario] -> linhas ordenadas do mais rápido ao mais lento
+  const groups = useMemo(() => {
+    const map = new Map<string, BenchRow[]>();
+    rows.forEach((r) => {
+      const key = `${r.group} · ${r.scenario}`;
+      map.set(key, [...(map.get(key) ?? []), r]);
+    });
+    return [...map.entries()].map(([title, list]) => ({
+      title,
+      list: [...list].sort((a, b) => a.ms - b.ms),
+    }));
+  }, [rows]);
+
   return (
-    <PresentationScreen
-      eyebrow="04 · PERFORMANCE"
-      title="Benchmarks"
-      description="Performance depende do tipo de operação, tamanho dos dados e frequência de acesso."
-    >
-      <View style={styles.table}>
-        <Row
-          title="MMKV"
-          description="Key-value"
-          value="Alta performance"
-        />
+    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <Text style={styles.title}>Storage benchmark</Text>
+      <Text style={styles.subtitle}>
+        {totalItems} itens · mediana de 3 execuções (+1 warm-up)
+      </Text>
 
-        <Row
-          title="Secure Store"
-          description="Secure storage"
-          value="Segurança"
-        />
-
-        <Row
-          title="Zustand + Persist"
-          description="State persistence"
-          value="Produtividade"
-        />
+      <View style={styles.chips}>
+        {MULTIPLIERS.map((m) => (
+          <Pressable
+            key={m}
+            disabled={running}
+            onPress={() => setMultiplier(m)}
+            style={[styles.chip, m === multiplier && styles.chipActive]}
+          >
+            <Text style={styles.chipText}>{cartItens.length * m} itens</Text>
+          </Pressable>
+        ))}
       </View>
 
-      <View style={styles.conclusion}>
-        <Text style={styles.conclusionLabel}>
-          TAKEAWAY
-        </Text>
+      <Pressable
+        onPress={handleRun}
+        disabled={running}
+        style={[styles.button, running && { opacity: 0.6 }]}
+      >
+        {running ? (
+          <ActivityIndicator color="#0B1020" />
+        ) : (
+          <Text style={styles.buttonText}>Rodar benchmark</Text>
+        )}
+      </Pressable>
+      {running && <Text style={styles.progress}>{progress}</Text>}
 
-        <Text style={styles.conclusionText}>
-          Não existe um storage universal.
-          A escolha deve partir do tipo de dado,
-          requisito de segurança e padrão de acesso.
-        </Text>
-      </View>
-    </PresentationScreen>
+      {groups.map(({ title, list }) => (
+        <View key={title} style={styles.section}>
+          <Text style={styles.sectionTitle}>{title}</Text>
+          <View style={styles.table}>
+            {list.map((r, i) => (
+              <ResultRow key={r.lib} row={r} fastest={i === 0} slowest={list[list.length - 1].ms} />
+            ))}
+          </View>
+        </View>
+      ))}
+
+      {groups.length > 0 && (
+        <View style={styles.conclusion}>
+          <Text style={styles.conclusionLabel}>MAIS RÁPIDO POR CENÁRIO</Text>
+          {groups.map(({ title, list }) => (
+            <Text key={title} style={styles.conclusionText}>
+              {title}: {list[0].lib} ({list[0].ms.toFixed(2)} ms)
+            </Text>
+          ))}
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
-function Row({
-  title,
-  description,
-  value,
-}: {
-  title: string;
-  description: string;
-  value: string;
-}) {
+function ResultRow({ row, fastest, slowest }: { row: BenchRow; fastest: boolean; slowest: number }) {
+  const times = slowest > 0 ? (slowest / Math.max(row.ms, 0.001)).toFixed(1) : '1.0';
   return (
     <View style={styles.row}>
       <View>
-        <Text style={styles.rowTitle}>{title}</Text>
+        <Text style={styles.rowTitle}>{row.lib}</Text>
         <Text style={styles.rowDescription}>
-          {description}
+          {fastest ? 'mais rápido' : `${(row.ms / Math.max(slowest, 0.001) * 100).toFixed(0)}% do mais lento`}
+          {' · '}
+          {times}x vs. pior
         </Text>
       </View>
-
-      <Text style={styles.rowValue}>
-        {value}
+      <Text style={[styles.rowValue, fastest && { color: '#4ADE80' }]}>
+        {row.ms.toFixed(2)} ms
       </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: '#0B1020' },
+  content: { padding: 24, paddingTop: 64, paddingBottom: 64 },
+
+  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800' },
+  subtitle: { marginTop: 4, color: '#7F8BA1', fontSize: 14 },
+
+  chips: { flexDirection: 'row', gap: 8, marginTop: 20 },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#27324A',
+  },
+  chipActive: { backgroundColor: '#151F34', borderColor: '#61DAFB' },
+  chipText: { color: '#FFFFFF', fontSize: 13, fontWeight: '600' },
+
+  button: {
+    marginTop: 16,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#61DAFB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: { color: '#0B1020', fontSize: 16, fontWeight: '800' },
+  progress: { marginTop: 8, color: '#7F8BA1', fontSize: 13, textAlign: 'center' },
+
+  section: { marginTop: 24 },
+  sectionTitle: { marginBottom: 8, color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
+
   table: {
     borderRadius: 18,
     overflow: 'hidden',
@@ -84,7 +170,7 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    minHeight: 82,
+    minHeight: 72,
     paddingHorizontal: 24,
 
     flexDirection: 'row',
@@ -116,7 +202,7 @@ const styles = StyleSheet.create({
 
   conclusion: {
     marginTop: 24,
-    padding: 28,
+    padding: 24,
 
     borderRadius: 18,
     backgroundColor: '#151F34',
@@ -130,11 +216,11 @@ const styles = StyleSheet.create({
   },
 
   conclusionText: {
-    marginTop: 12,
+    marginTop: 10,
 
     color: '#FFFFFF',
-    fontSize: 20,
-    lineHeight: 30,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: '600',
   },
 });

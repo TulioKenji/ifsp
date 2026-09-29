@@ -8,11 +8,13 @@ import { StoragesAndZustandSlide } from './slides/StoragesAndZustandSlide';
 import { BenchmarksSlide } from './slides/BenchmarksSlide';
 import { ConclusionSlide } from './slides/ConclusionSlide';
 import { ReferenciasSlide } from './slides/ReferenciasSlide';
+import { ExpoSQLiteSlide } from './slides/ExpoSQLiteSlide';
 
 const slides = [
   { id: 'home', title: 'Home', component: HomeSlide },
   { id: 'mmkv', title: 'MMKV', component: MMKVSlide },
   { id: 'expo-secure-store', title: 'Expo SecureStore', component: ExpoSecureStoreSlide },
+  { id: 'expo-sqlite', title: 'Expo SQLite', component: ExpoSQLiteSlide },
   { id: 'storages-zustand', title: 'Storages & Zustand', component: StoragesAndZustandSlide },
   { id: 'benchmarks', title: 'Benchmarks', component: BenchmarksSlide },
   { id: 'conclusion', title: 'Conclusão', component: ConclusionSlide },
