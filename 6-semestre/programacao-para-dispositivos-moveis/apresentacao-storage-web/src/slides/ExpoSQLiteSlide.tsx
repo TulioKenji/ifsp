@@ -34,6 +34,10 @@ export function ExpoSQLiteSlide() {
               description="A ativação do Write-Ahead Logging (WAL) melhora drasticamente a concorrência e leitura. Prepared Statements recompilam as queries e evitam SQL Injection."
               color="emerald"
             />
+            <div className='text-md space-y-4'>
+              <p>Rollback Journal: armazena informações necessárias para desfazer alterações.</p>
+              <p>WAL (Write-Ahead Logging): registra as alterações em um arquivo separado antes de incorporá-las ao banco principal.</p>
+            </div>
           </div>
         </div>
 
@@ -46,7 +50,7 @@ export function ExpoSQLiteSlide() {
             <div className="flex items-start gap-3">
               <div className="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-lg shrink-0">JSI</div>
               <div>
-                <p className="text-md text-white font-medium mb-1">Comunicação Direta (Sem Bridge)</p>
+                <p className="text-md text-white font-medium mb-1">Comunicação Direta</p>
                 <p className="text-md text-slate-300">O módulo utiliza <strong>JSI (JavaScript Interface)</strong> para se comunicar diretamente com a biblioteca C nativa do SQLite. Os dados não precisam ser serializados em JSON, permitindo APIs totalmente síncronas ou execuções em background hiper-rápidas.</p>
               </div>
             </div>
@@ -157,11 +161,19 @@ export function ExpoSQLiteSlide() {
   1. JS invoca db.getFirstSync() passando a query de consulta.
   2. A thread do JS congela aguardando a resposta rápida da memória (Síncrono).
 
-  ⏬ (Acesso DIRETO via JSI - Nenhuma Bridge, Nenhum JSON) ⏬
+  ⏬ (Acesso DIRETO via JSI) ⏬
+    SQLiteModule / Connection 
 
 [Native C++ Engine (SQLite)]
   3. A função C++ acessa a string da query diretamente no Heap do JavaScript.
   4. O motor analisa, otimiza e prepara o plano de execução SQL.
+
+|  Parser SQL                         │
+│       Query Planner                 │
+│       VDBE / Virtual Machine        │
+│       B-tree                        │
+│       Pager                         │
+│       Locking
 
   ⏬ (Operação I/O otimizada pelo Kernel do SO) ⏬
 
