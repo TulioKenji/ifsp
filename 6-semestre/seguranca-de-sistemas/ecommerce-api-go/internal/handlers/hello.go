@@ -5,17 +5,20 @@ import (
 	"path/filepath"
 
 	"ecommerce-api-go/internal/auth"
+	"ecommerce-api-go/internal/models"
 )
 
 type Handler struct {
 	staticIndexPath string
 	auth            *authHandler
+	products        *productHandler
 }
 
-func New(service auth.Service) *Handler {
+func New(service auth.Service, productModel models.ProductModel) *Handler {
 	return &Handler{
 		staticIndexPath: filepath.Join("static", "index.html"),
 		auth:            newAuthHandler(service),
+		products:        newProductHandler(productModel),
 	}
 }
 
@@ -34,4 +37,8 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	h.auth.Login(w, r)
+}
+
+func (h *Handler) Products(w http.ResponseWriter, r *http.Request) {
+	h.products.ListOrByID(w, r)
 }

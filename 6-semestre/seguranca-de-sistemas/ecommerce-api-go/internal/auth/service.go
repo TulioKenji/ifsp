@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"strings"
@@ -32,13 +33,18 @@ type Service struct {
 	Now      func() time.Time
 }
 
-func (s Service) Register(ctx context.Context, email, password string) (models.User, error) {
+func (s Service) Register(ctx context.Context, email, password, name string) (models.User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), passwordCost)
 	if err != nil {
 		return models.User{}, fmt.Errorf("hash password: %w", err)
 	}
 
-	user, err := s.Users.Create(ctx, strings.ToLower(strings.TrimSpace(email)), string(hash))
+	email = strings.ToLower(strings.TrimSpace(email))
+	name = strings.TrimSpace(name)
+	if name == "" {
+		name = email
+	}
+	user, err := s.Users.Create(ctx, email, string(hash), name)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -63,12 +69,13 @@ func (s Service) Login(ctx context.Context, email, password string) (models.User
 	}
 	token := base64.RawURLEncoding.EncodeToString(rawToken)
 	tokenHash := sha256.Sum256([]byte(token))
+	tokenHashHex := hex.EncodeToString(tokenHash[:])
 	now := time.Now
 	if s.Now != nil {
 		now = s.Now
 	}
 	expiresAt := now().Add(sessionTTL)
-	session, err := s.Sessions.Create(ctx, user.ID, tokenHash[:], expiresAt)
+	session, err := s.Sessions.Create(ctx, user.ID, tokenHashHex, expiresAt)
 	if err != nil {
 		return models.User{}, models.Session{}, "", err
 	}

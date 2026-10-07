@@ -11,32 +11,34 @@ import (
 var ErrNotFound = errors.New("not found")
 
 type User struct {
-	ID           int64
+	ID           string
 	Email        string
+	Name         string
 	PasswordHash string
 	CreatedAt    time.Time
 }
 
 type Session struct {
-	ID        int64
-	UserID    int64
-	TokenHash []byte
-	ExpiresAt time.Time
-	CreatedAt time.Time
+	ID         string
+	UserID     string
+	TokenHash  string
+	ExpiresAt  time.Time
+	CreatedAt  time.Time
+	RevokedAt  *time.Time
 }
 
 type UserModel struct {
 	DB *sql.DB
 }
 
-func (m UserModel) Create(ctx context.Context, email, passwordHash string) (User, error) {
+func (m UserModel) Create(ctx context.Context, email, passwordHash, name string) (User, error) {
 	var user User
 	err := m.DB.QueryRowContext(ctx,
-		`INSERT INTO users (email, password_hash)
-		 VALUES ($1, $2)
-		 RETURNING id, email, password_hash, created_at`,
-		email, passwordHash,
-	).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.CreatedAt)
+		`INSERT INTO users (email, password_hash, name)
+		 VALUES ($1, $2, $3)
+		RETURNING id, email, name, password_hash, created_at`,
+		email, passwordHash, name,
+	).Scan(&user.ID, &user.Email, &user.Name, &user.PasswordHash, &user.CreatedAt)
 	if err != nil {
 		return User{}, fmt.Errorf("create user: %w", err)
 	}
@@ -46,10 +48,10 @@ func (m UserModel) Create(ctx context.Context, email, passwordHash string) (User
 func (m UserModel) ByEmail(ctx context.Context, email string) (User, error) {
 	var user User
 	err := m.DB.QueryRowContext(ctx,
-		`SELECT id, email, password_hash, created_at
+		`SELECT id, email, name, password_hash, created_at
 		 FROM users WHERE email = $1`,
 		email,
-	).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.CreatedAt)
+	).Scan(&user.ID, &user.Email, &user.Name, &user.PasswordHash, &user.CreatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return User{}, ErrNotFound
 	}
@@ -59,13 +61,13 @@ func (m UserModel) ByEmail(ctx context.Context, email string) (User, error) {
 	return user, nil
 }
 
-func (m UserModel) ByID(ctx context.Context, id int64) (User, error) {
+func (m UserModel) ByID(ctx context.Context, id string) (User, error) {
 	var user User
 	err := m.DB.QueryRowContext(ctx,
-		`SELECT id, email, password_hash, created_at
+		`SELECT id, email, name, password_hash, created_at
 		 FROM users WHERE id = $1`,
 		id,
-	).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.CreatedAt)
+	).Scan(&user.ID, &user.Email, &user.Name, &user.PasswordHash, &user.CreatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return User{}, ErrNotFound
 	}
@@ -75,7 +77,7 @@ func (m UserModel) ByID(ctx context.Context, id int64) (User, error) {
 	return user, nil
 }
 
-func (m UserModel) UpdatePassword(ctx context.Context, id int64, passwordHash string) error {
+func (m UserModel) UpdatePassword(ctx context.Context, id string, passwordHash string) error {
 	result, err := m.DB.ExecContext(ctx,
 		`UPDATE users SET password_hash = $1 WHERE id = $2`,
 		passwordHash, id,
@@ -91,7 +93,7 @@ func (m UserModel) UpdatePassword(ctx context.Context, id int64, passwordHash st
 	return nil
 }
 
-func (m UserModel) Delete(ctx context.Context, id int64) error {
+func (m UserModel) Delete(ctx context.Context, id string) error {
 	result, err := m.DB.ExecContext(ctx, `DELETE FROM users WHERE id = $1`, id)
 	if err != nil {
 		return fmt.Errorf("delete user: %w", err)
@@ -108,27 +110,28 @@ type SessionModel struct {
 	DB *sql.DB
 }
 
-func (m SessionModel) Create(ctx context.Context, userID int64, tokenHash []byte, expiresAt time.Time) (Session, error) {
+func (m SessionModel) Create(ctx context.Context, userID, tokenHash string, expiresAt time.Time) (Session, error) {
 	var session Session
 	err := m.DB.QueryRowContext(ctx,
 		`INSERT INTO sessions (user_id, token_hash, expires_at)
 		 VALUES ($1, $2, $3)
-		 RETURNING id, user_id, token_hash, expires_at, created_at`,
+		 RETURNING id, user_id, token_hash, expires_at, created_at, revoked_at`,
 		userID, tokenHash, expiresAt,
-	).Scan(&session.ID, &session.UserID, &session.TokenHash, &session.ExpiresAt, &session.CreatedAt)
+	).Scan(&session.ID, &session.UserID, &session.TokenHash, &session.ExpiresAt, &session.CreatedAt, &session.RevokedAt)
 	if err != nil {
 		return Session{}, fmt.Errorf("create session: %w", err)
 	}
 	return session, nil
 }
 
-func (m SessionModel) ByTokenHash(ctx context.Context, tokenHash []byte) (Session, error) {
+func (m SessionModel) ByTokenHash(ctx context.Context, tokenHash string) (Session, error) {
 	var session Session
 	err := m.DB.QueryRowContext(ctx,
-		`SELECT id, user_id, token_hash, expires_at, created_at
-		 FROM sessions WHERE token_hash = $1 AND expires_at > NOW()`,
+		`SELECT id, user_id, token_hash, expires_at, created_at, revoked_at
+		 FROM sessions
+		 WHERE token_hash = $1 AND expires_at > NOW() AND revoked_at IS NULL`,
 		tokenHash,
-	).Scan(&session.ID, &session.UserID, &session.TokenHash, &session.ExpiresAt, &session.CreatedAt)
+	).Scan(&session.ID, &session.UserID, &session.TokenHash, &session.ExpiresAt, &session.CreatedAt, &session.RevokedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Session{}, ErrNotFound
 	}
@@ -138,8 +141,8 @@ func (m SessionModel) ByTokenHash(ctx context.Context, tokenHash []byte) (Sessio
 	return session, nil
 }
 
-func (m SessionModel) Delete(ctx context.Context, id int64) error {
-	_, err := m.DB.ExecContext(ctx, `DELETE FROM sessions WHERE id = $1`, id)
+func (m SessionModel) Delete(ctx context.Context, id string) error {
+	_, err := m.DB.ExecContext(ctx, `UPDATE sessions SET revoked_at = NOW() WHERE id = $1`, id)
 	if err != nil {
 		return fmt.Errorf("delete session: %w", err)
 	}

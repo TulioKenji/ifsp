@@ -72,6 +72,9 @@ export function StoragesAndZustandSlide() {
                 <div className="text-center p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
                   <span className="text-xs text-amber-300">AsyncStorage</span>
                 </div>
+                <div className="text-center p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                  <span className="text-xs text-amber-300">SQLite</span>
+                </div>
               </div>
             </div>
           </div>

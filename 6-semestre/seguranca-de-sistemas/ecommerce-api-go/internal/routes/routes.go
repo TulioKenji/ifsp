@@ -12,6 +12,8 @@ func New(handler *handlers.Handler) http.Handler {
 	// mux.HandleFunc("/headers", handler.Headers)
 	mux.HandleFunc("/register", handler.Register)
 	mux.HandleFunc("/login", handler.Login)
+	mux.HandleFunc("/products", handler.Products)
+	mux.HandleFunc("/products/", handler.Products)
 
 	return mux
 }

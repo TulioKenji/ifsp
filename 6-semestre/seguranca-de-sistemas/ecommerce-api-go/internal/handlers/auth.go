@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/mail"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -19,6 +20,7 @@ const maxRequestBody = 1 << 20
 type credentialsRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Name     string `json:"name,omitempty"`
 }
 
 type authHandler struct {
@@ -41,7 +43,7 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	ctx, cancel := contextWithTimeout(r)
 	defer cancel()
-	user, err := h.service.Register(ctx, request.Email, request.Password)
+	_, err := h.service.Register(ctx, request.Email, request.Password, request.Name)
 	if err != nil {
 		if database.IsUniqueViolation(err) {
 			writeError(w, http.StatusConflict, "email already registered")
@@ -51,11 +53,7 @@ func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, http.StatusOK, map[string]any{
-		"id":         user.ID,
-		"email":      user.Email,
-		"created_at": user.CreatedAt,
-	})
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -80,14 +78,20 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    token,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   os.Getenv("PRODUCTION") == "1",
+		SameSite: http.SameSiteLaxMode,
+		Expires:  session.ExpiresAt,
+		MaxAge:   int(time.Until(session.ExpiresAt).Seconds()),
+	})
 	writeJSON(w, http.StatusOK, map[string]any{
-		"token":      token,
-		"token_type": "Bearer",
-		"expires_at": session.ExpiresAt,
-		"user": map[string]any{
-			"id":    user.ID,
-			"email": user.Email,
-		},
+		"id":    user.ID,
+		"email": user.Email,
+		"name":  user.Name,
 	})
 }
 
