@@ -2,10 +2,61 @@ package middleware
 
 import (
 	"log"
+	"net"
 	"net/http"
 	"runtime/debug"
+	"strconv"
 	"strings"
+	"sync"
+	"time"
 )
+
+const maxRequestBody = 1 << 20
+
+type rateLimiter struct {
+	mu      sync.Mutex
+	clients map[string]*clientLimit
+	limit   int
+	window  time.Duration
+}
+
+type clientLimit struct {
+	started time.Time
+	count   int
+}
+
+func RateLimit(limit int, window time.Duration, next http.Handler) http.Handler {
+	limiter := &rateLimiter{clients: make(map[string]*clientLimit), limit: limit, window: window}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		key := r.RemoteAddr
+		if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
+			key = host
+		}
+		now := time.Now()
+		limiter.mu.Lock()
+		client := limiter.clients[key]
+		if client == nil || now.Sub(client.started) >= limiter.window {
+			client = &clientLimit{started: now}
+			limiter.clients[key] = client
+		}
+		client.count++
+		count := client.count
+		limiter.mu.Unlock()
+		if count > limiter.limit {
+			w.Header().Set("Retry-After", strconv.Itoa(int(limiter.window.Seconds())))
+			writeError(w, http.StatusTooManyRequests, "too many requests")
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func LimitRequestBody(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, maxRequestBody)
+		next.ServeHTTP(w, r)
+	})
+}
 
 func Recover(logger *log.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -31,31 +82,33 @@ func SecurityHeaders(next http.Handler) http.Handler {
 
 func CORS(allowedOrigins []string, next http.Handler) http.Handler {
 	allowed := make(map[string]struct{}, len(allowedOrigins))
+	allowPublic := false
 	for _, origin := range allowedOrigins {
 		origin = strings.TrimSpace(origin)
-		if origin != "" && origin != "*" {
+		if origin == "*" {
+			allowPublic = true
+		} else if origin != "" {
 			allowed[origin] = struct{}{}
 		}
 	}
-
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 		if origin == "" {
 			next.ServeHTTP(w, r)
 			return
 		}
-		if _, ok := allowed[origin]; !ok {
+		_, isAllowed := allowed[origin]
+		if !isAllowed && !allowPublic {
 			writeError(w, http.StatusForbidden, "origin is not allowed")
 			return
 		}
-
 		w.Header().Set("Access-Control-Allow-Origin", origin)
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		if !allowPublic {
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+		}
 		w.Header().Add("Vary", "Origin")
-
 		if r.Method == http.MethodOptions {
-			if !isAllowedCORSMethod(r.Header.Get("Access-Control-Request-Method")) ||
-				!areAllowedCORSHeaders(r.Header.Get("Access-Control-Request-Headers")) {
+			if !isAllowedCORSMethod(r.Header.Get("Access-Control-Request-Method")) || !areAllowedCORSHeaders(r.Header.Get("Access-Control-Request-Headers")) {
 				writeError(w, http.StatusForbidden, "CORS request is not allowed")
 				return
 			}
@@ -66,7 +119,6 @@ func CORS(allowedOrigins []string, next http.Handler) http.Handler {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }

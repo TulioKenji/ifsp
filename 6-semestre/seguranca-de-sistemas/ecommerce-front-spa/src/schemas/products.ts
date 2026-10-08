@@ -27,6 +27,6 @@ export const ProductResponseSchema = v.object({
     stock_quantity: v.number(),
     sku: v.string(),
     active: v.boolean(),
-    url: v.string(),
+    url: v.nullable(v.string()),
   })),
 })

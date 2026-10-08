@@ -35,16 +35,17 @@ func main() {
 		Sessions: models.SessionModel{DB: db},
 	}, models.ProductModel{DB: db})
 	server := &http.Server{
-		Addr:    ":8080",
-		Handler: middleware.Recover(
-			log.Default(),
-			middleware.SecurityHeaders(
+		Addr: ":8080",
+		Handler: middleware.Recover(log.Default(), middleware.SecurityHeaders(
+			middleware.RateLimit(120, time.Minute, middleware.LimitRequestBody(
 				middleware.CORS(allowedOrigins, routes.New(handler)),
-			),
-		),
-		ReadTimeout: 10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout: 60 * time.Second,
+			)),
+		)),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       60 * time.Second,
+		MaxHeaderBytes:    32 << 10,
 	}
 
 	log.Printf("API listening at http://localhost%s", server.Addr)

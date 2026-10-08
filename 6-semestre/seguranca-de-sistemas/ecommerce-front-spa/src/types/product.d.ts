@@ -7,5 +7,5 @@ interface Product {
   stock_quantity: number
   sku: string
   active: boolean
-  url: string
+  url: string | null
 }
