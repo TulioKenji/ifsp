@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 	"strings"
 
 	"ecommerce-api-go/internal/models"
 	"ecommerce-api-go/internal/queryparams"
+	"ecommerce-api-go/internal/validation"
 )
 
 type productHandler struct {
@@ -35,7 +37,7 @@ func (h *productHandler) ListOrByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := strings.TrimPrefix(r.URL.Path, "/products")
+	path := strings.TrimPrefix(r.URL.Path, "/api/products")
 	if path == "" || path == "/" {
 		h.list(w, r)
 		return
@@ -59,7 +61,8 @@ func (h *productHandler) list(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	products, total, err := h.products.List(ctx, params)
 	if err != nil {
-		writeError(w, http.StatusBadRequest, err.Error())
+		slog.Error("product listing failed", "error", err)
+		writeError(w, http.StatusInternalServerError, "could not list products")
 		return
 	}
 
@@ -75,6 +78,10 @@ func (h *productHandler) list(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *productHandler) byID(w http.ResponseWriter, r *http.Request, id string) {
+	if !validation.UUID(id) {
+		writeError(w, 400, "UUID inválido")
+		return
+	}
 	ctx, cancel := contextWithTimeout(r)
 	defer cancel()
 	product, err := h.products.ByID(ctx, id)
@@ -88,4 +95,3 @@ func (h *productHandler) byID(w http.ResponseWriter, r *http.Request, id string)
 	}
 	writeJSON(w, http.StatusOK, product)
 }
-

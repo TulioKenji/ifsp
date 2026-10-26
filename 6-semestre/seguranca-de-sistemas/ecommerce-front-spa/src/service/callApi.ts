@@ -9,22 +9,30 @@ interface CallApiResponse<T> {
     data: T | null;
     error?: string;
 }
-const baseUrl = 'http://localhost:8080/';
+// Mesma origem em produção; o proxy do Vite encaminha /api durante o desenvolvimento.
+const baseUrl = '/api/';
+let csrfToken: string | undefined
+export function setCSRFToken(token?: string) { csrfToken = token }
 
 export default async function callApi<T>({ url, ...options }: CallApiProps): Promise<CallApiResponse<T>> {
     const finalUrl = baseUrl + (url.startsWith('/') ? url.slice(1) : url);
     try {
-        const response = await fetch(finalUrl, options);
+        const headers = new Headers(options.headers)
+        if (options.body) headers.set('Content-Type', 'application/json')
+        if (csrfToken && !['GET', 'HEAD'].includes(options.method ?? 'GET')) headers.set('X-CSRF-Token', csrfToken)
+        const response = await fetch(finalUrl, { ...options, headers, credentials: 'same-origin' });
+        // Cadastro (201) e logout (204) podem responder sem corpo.
+        const raw = await response.text()
+        const data: unknown = raw ? JSON.parse(raw) : null
         if (!response.ok) {
             return {
                 data: null,
                 status: response.status,
-                error: `Erro na requisição: ${response.statusText}`,
+                error: typeof data === 'object' && data !== null && 'error' in data && typeof data.error === 'string' ? data.error : `Erro na requisição: ${response.status}`,
             };
         }
-        const data = await response.json();
         return {
-            data,
+            data: data as T | null,
             status: response.status,
             error: undefined,
         } as CallApiResponse<T>;

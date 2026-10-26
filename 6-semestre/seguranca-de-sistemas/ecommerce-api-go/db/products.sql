@@ -127,4 +127,12 @@ INSERT INTO products (
 (NULL, 'Processador Ryzen 5', 'processador-ryzen-5', 'Processador de seis núcleos para computadores de uso geral.', 999.90, 20, 'CPU-0001', TRUE),
 (NULL, 'Processador Ryzen 7', 'processador-ryzen-7', 'Processador de alto desempenho para jogos e produtividade.', 1699.90, 12, 'CPU-0002', TRUE),
 (NULL, 'Processador Core i5', 'processador-core-i5', 'Processador intermediário para computadores domésticos e profissionais.', 1199.90, 18, 'CPU-0003', TRUE),
-(NULL, 'Processador Core i7', 'processador-core-i7', 'Processador de alto desempenho para aplicações exigentes.', 1899.90, 10, 'CPU-0004', TRUE);
+(NULL, 'Processador Core i7', 'processador-core-i7', 'Processador de alto desempenho para aplicações exigentes.', 1899.90, 10, 'CPU-0004', TRUE)
+-- Reexecutar o seed nunca altera preços, estoque ou produtos já cadastrados.
+ON CONFLICT DO NOTHING;
+
+-- Opções de demonstração. Preço e estoque continuam compartilhados por produto.
+UPDATE products SET options='{"tipo":["ABNT2","US"],"cor":["Preto","Branco"]}'
+WHERE sku IN ('TEC-0001','TEC-0003') AND options='{}';
+UPDATE products SET options='{"tamanho":["M","G"],"cor":["Preto","Verde"]}'
+WHERE sku IN ('PAD-0001','PAD-0002') AND options='{}';

@@ -5,39 +5,42 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"ecommerce-api-go/internal/queryparams"
 )
 
 type ProductListItem struct {
-	ID            string    `json:"id"`
-	SellerID      *string   `json:"seller_id,omitempty"`
-	Name          string    `json:"name"`
-	Slug          string    `json:"slug"`
-	Description   *string   `json:"description,omitempty"`
-	Price         string    `json:"price"`
-	StockQuantity int       `json:"stock_quantity"`
-	SKU           *string   `json:"sku,omitempty"`
-	Active        bool      `json:"active"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	URL           *string   `json:"url"`
+	Options       map[string][]string `json:"options"`
+	ID            string              `json:"id"`
+	SellerID      *string             `json:"seller_id,omitempty"`
+	Name          string              `json:"name"`
+	Slug          string              `json:"slug"`
+	Description   *string             `json:"description,omitempty"`
+	Price         string              `json:"price"`
+	StockQuantity int                 `json:"stock_quantity"`
+	SKU           *string             `json:"sku,omitempty"`
+	Active        bool                `json:"active"`
+	CreatedAt     time.Time           `json:"created_at"`
+	UpdatedAt     time.Time           `json:"updated_at"`
+	URL           *string             `json:"url"`
 }
 
 type ProductDetail struct {
-	ID            string    `json:"id"`
-	SellerID      *string   `json:"seller_id,omitempty"`
-	Name          string    `json:"name"`
-	Slug          string    `json:"slug"`
-	Description   *string   `json:"description,omitempty"`
-	Price         string    `json:"price"`
-	StockQuantity int       `json:"stock_quantity"`
-	SKU           *string   `json:"sku,omitempty"`
-	Active        bool      `json:"active"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	URLs          []string  `json:"url"`
+	Options       map[string][]string `json:"options"`
+	ID            string              `json:"id"`
+	SellerID      *string             `json:"seller_id,omitempty"`
+	Name          string              `json:"name"`
+	Slug          string              `json:"slug"`
+	Description   *string             `json:"description,omitempty"`
+	Price         string              `json:"price"`
+	StockQuantity int                 `json:"stock_quantity"`
+	SKU           *string             `json:"sku,omitempty"`
+	Active        bool                `json:"active"`
+	CreatedAt     time.Time           `json:"created_at"`
+	UpdatedAt     time.Time           `json:"updated_at"`
+	URLs          []string            `json:"url"`
 }
 
 type ProductModel struct {
@@ -53,7 +56,7 @@ func (m ProductModel) List(ctx context.Context, params queryparams.Params) ([]Pr
 	query := `
 		SELECT p.id, p.seller_id, p.name, p.slug, p.description, p.price,
 		       p.stock_quantity, p.sku, p.active, p.created_at, p.updated_at,
-		       image.url, COUNT(*) OVER()
+		       image.url,p.options, COUNT(*) OVER()
 		FROM products AS p
 		LEFT JOIN LATERAL (
 			SELECT pi.url
@@ -64,11 +67,15 @@ func (m ProductModel) List(ctx context.Context, params queryparams.Params) ([]Pr
 		) AS image ON TRUE
 		WHERE p.active = TRUE`
 	args := make([]any, 0, 3)
+	if len(params.IDs) > 0 {
+		query += " AND p.id=ANY($1::uuid[])"
+		args = append(args, "{"+strings.Join(params.IDs, ",")+"}")
+	}
 	if params.Query != "" {
-		query += " AND " + searchExpression + " @@ websearch_to_tsquery('simple', $1)"
+		query += fmt.Sprintf(" AND "+searchExpression+" @@ websearch_to_tsquery('simple', $%d)", len(args)+1)
 		args = append(args, params.Query)
 	}
-	query += fmt.Sprintf(" ORDER BY created_at DESC, id LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	query += fmt.Sprintf(" ORDER BY p.created_at DESC, p.id LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
 	args = append(args, params.Size, params.Offset())
 
 	rows, err := m.DB.QueryContext(ctx, query, args...)
@@ -81,14 +88,18 @@ func (m ProductModel) List(ctx context.Context, params queryparams.Params) ([]Pr
 	total := 0
 	for rows.Next() {
 		var product ProductListItem
+		var rawOptions []byte
 		if err := rows.Scan(
 			&product.ID, &product.SellerID, &product.Name, &product.Slug,
 			&product.Description, &product.Price, &product.StockQuantity,
 			&product.SKU, &product.Active, &product.CreatedAt, &product.UpdatedAt,
-			&product.URL,
+			&product.URL, &rawOptions,
 			&total,
 		); err != nil {
 			return nil, 0, fmt.Errorf("scan product: %w", err)
+		}
+		if err := json.Unmarshal(rawOptions, &product.Options); err != nil {
+			return nil, 0, err
 		}
 		products = append(products, product)
 	}
@@ -102,6 +113,7 @@ func (m ProductModel) List(ctx context.Context, params queryparams.Params) ([]Pr
 func (m ProductModel) ByID(ctx context.Context, id string) (ProductDetail, error) {
 	var product ProductDetail
 	var rawURLs string
+	var rawOptions []byte
 	err := m.DB.QueryRowContext(ctx, `
 		SELECT p.id, p.seller_id, p.name, p.slug, p.description, p.price,
 		       p.stock_quantity, p.sku, p.active, p.created_at, p.updated_at,
@@ -109,14 +121,14 @@ func (m ProductModel) ByID(ctx context.Context, id string) (ProductDetail, error
 			   SELECT json_agg(pi.url ORDER BY pi.sort_order, pi.id)
 			   FROM product_images AS pi
 			   WHERE pi.product_id = p.id
-		       ), '[]'::json)::text
+		       ), '[]'::json)::text,p.options
 		FROM products AS p
 		WHERE p.id = $1 AND p.active = TRUE`, id,
 	).Scan(
 		&product.ID, &product.SellerID, &product.Name, &product.Slug,
 		&product.Description, &product.Price, &product.StockQuantity,
 		&product.SKU, &product.Active, &product.CreatedAt, &product.UpdatedAt,
-		&rawURLs,
+		&rawURLs, &rawOptions,
 	)
 	if err == sql.ErrNoRows {
 		return ProductDetail{}, ErrNotFound
@@ -126,6 +138,9 @@ func (m ProductModel) ByID(ctx context.Context, id string) (ProductDetail, error
 	}
 	if err := json.Unmarshal([]byte(rawURLs), &product.URLs); err != nil {
 		return ProductDetail{}, fmt.Errorf("decode product images: %w", err)
+	}
+	if err := json.Unmarshal(rawOptions, &product.Options); err != nil {
+		return ProductDetail{}, err
 	}
 	return product, nil
 }

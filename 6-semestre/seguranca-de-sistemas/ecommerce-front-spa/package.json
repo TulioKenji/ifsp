@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -17,7 +18,8 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3",
-    "valibot": "^1.5.0"
+    "valibot": "^1.5.0",
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
