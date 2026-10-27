@@ -2,3 +2,4 @@
 .npm-cache/
 .test-postgres.log
 .cache/
+dist-greenstore

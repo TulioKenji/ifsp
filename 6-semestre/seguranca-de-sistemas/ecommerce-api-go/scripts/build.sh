@@ -15,6 +15,8 @@ go build -trimpath -ldflags='-s -w' -o "$out/greenstore" .
 go build -trimpath -ldflags='-s -w' -o "$out/dbsetup" ./cmd/dbsetup
 go build -trimpath -ldflags='-s -w' -o "$out/keygen" ./cmd/keygen
 go build -trimpath -ldflags='-s -w' -o "$out/stress" ./cmd/stress
+go build -trimpath -ldflags='-s -w' -o "$out/ordergen" ./cmd/ordergen
+go build -trimpath -ldflags='-s -w' -o "$out/dbstatus" ./cmd/dbstatus
 cp -R ../ecommerce-front-spa/dist/. "$out/spa/"
 cp -R deploy "$out/"
 cp -R docs "$out/"
